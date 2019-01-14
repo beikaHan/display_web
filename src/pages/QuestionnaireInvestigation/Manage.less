@@ -1,0 +1,112 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+
+.classManageList {
+  .tableListOperator {
+    margin-bottom: 16px;
+    overflow: hidden;
+    button {
+      margin-right: 8px;
+    }
+  }
+  .mockBtn {
+    float: left;
+    height: 32px;
+  }
+}
+
+.classManageListForm {
+  padding-bottom: 17px;
+  overflow: hidden;
+  :global {
+    .ant-form-item {
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+    }
+    #mediaXl {
+      text-align: right;
+      padding-right: 1%;
+      margin-bottom: 10px;
+      margin-top: 3px;
+      float: right;
+    }
+    .ant-form-item-control-wrapper {
+      flex: 1;
+      width: 89%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (min-width: 1600px) {
+      .ant-col-xxl-6, .ant-col-xxl-12, .ant-col-xxl-3, .ant-col-xxl-1 {
+        padding: 0 1%;
+      }
+
+      .ant-col-xxl-2 {
+        width: 5%;
+      }
+    }
+    @media (min-width: 1200px) and (max-width: 1600px) {
+      .ant-col-xl-8, .ant-col-xl-24, .ant-col-xl-4, .ant-col-xl-2, .ant-col-xl-5, .ant-col-xl-6, .ant-col-xl-7, .ant-col-xl-9, .ant-col-xl-16 {
+        padding: 0 1%;
+      }
+
+      .ant-col-xl-3 {
+        width: 8%;
+      }
+    }
+    @media (min-width: 992px) and (max-width: 1200px) {
+      .ant-col-lg-12, .ant-col-lg-24, .ant-col-lg-3, .ant-col-lg-4, .ant-col-lg-6, .ant-col-lg-8 {
+        padding: 0 1%;
+      }
+
+      .ant-col-lg-5 {
+        width: 12%;
+      }
+
+      .ant-col-lg-6 {
+        width: 20%;
+      }
+    }
+  }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}
+
+.classManageEdit {
+  :global {
+    .ant-form-inline .ant-form-item {
+      display: block;
+    }
+    .ant-form-item-label {
+      width: 20%;
+    }
+    .ant-form-item-control-wrapper {
+      width: 65%;
+    }
+  }
+}
+
+.pointerSpan {
+  float: left;
+  width: 100%;
+}

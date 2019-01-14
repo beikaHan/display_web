@@ -1,0 +1,53 @@
+@import "~antd/lib/style/themes/default.less";
+:global{
+  //.ant-select-selection--multiple > ul > li, .ant-select-selection--multiple .ant-select-selection__rendered > ul > li{
+  //  width: 0;
+  //  height: 0;
+  //  padding: 0;
+  //  margin: 0;
+  //}
+  .ant-select-selection--multiple .ant-select-selection__placeholder{
+    display: inline-block !important;
+    color: #000;opacity:0.8;
+  }
+  .ant-select-dropdown.ant-select-tree-dropdown.ant-select-dropdown--multiple.ant-select-dropdown-placement-bottomLeft{
+    max-height: 200px !important;
+    min-width: 274px !important;
+  }
+  #shopSelect{
+    :global{
+
+      .ant-select-selection.ant-select-selection--multiple{
+        overflow-x:hidden;
+        overflow-y:auto;
+         height:27px;
+      }
+      .ant-form-item-control{
+        top: 4px;
+        height: 39px;
+        line-height: 1;
+      }
+    }
+  }
+
+  #dateStrikethrough{
+    :global{
+      @media (min-width: 1600px){
+        .ant-form-item:nth-of-type(3){
+          padding:0 10px;
+        }
+      }
+      @media (min-width: 1200px)  and (max-width: 1600px){
+        .ant-form-item:nth-of-type(3){
+          padding:0 10px;
+        }
+      }
+      @media (min-width: 992px)  and (max-width: 1200px){
+        .ant-form-item:nth-of-type(3){
+          padding:0 3px;
+        }
+      }
+
+    }
+  }
+}

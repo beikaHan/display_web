@@ -1,0 +1,198 @@
+@import "~antd/lib/style/themes/default.less";
+
+.loop(@counter) when (@counter > 0) {
+  //.loop((@counter - 1));
+  // 递归调用自身 4 3 2 1 0
+  top: (51px * @counter); // 每次调用时产生的样式代码30px 20px  10px
+}
+
+.card {
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-size: 14px;
+  line-height: 22px;
+  margin: 0 0 16px 0;
+}
+
+.steps:global(.ant-steps) {
+  max-width: 750px;
+  margin: 16px auto;
+}
+
+.errorIcon {
+  cursor: pointer;
+  color: @error-color;
+  margin-right: 24px;
+  i {
+    margin-right: 4px;
+  }
+}
+
+.errorPopover {
+  :global {
+    .ant-popover-inner-content {
+      padding: 0;
+      max-height: 290px;
+      overflow: auto;
+      min-width: 256px;
+    }
+  }
+}
+
+.errorListItem {
+  list-style: none;
+  border-bottom: 1px solid @border-color-split;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all .3s;
+  &:hover {
+    background: @primary-1;
+  }
+  &:last-child {
+    border: 0;
+  }
+  .errorIcon {
+    color: @error-color;
+    float: left;
+    margin-top: 4px;
+    margin-right: 12px;
+    padding-bottom: 22px;
+  }
+  .errorField {
+    font-size: 12px;
+    color: @text-color-secondary;
+    margin-top: 2px;
+  }
+}
+
+// custom footer for fixed footer toolbar
+.advancedForm + div {
+  padding-bottom: 64px;
+}
+
+.advancedForm {
+  :global {
+    .ant-form .ant-row:last-child .ant-form-item {
+      margin-bottom: 24px;
+    }
+    .ant-table td {
+      transition: none !important;
+    }
+  }
+}
+
+.optional {
+  color: @text-color-secondary;
+  font-style: normal;
+}
+
+.editables {
+  height: 77px;
+  position: relative;
+}
+
+.dishAddTableFormD {
+  border: 1px solid #ccc !important;
+}
+
+//套餐备注
+.mealRemarkBox {
+  .mealRemarkItemBox {
+    box-sizing: border-box;
+    padding: 4px 11px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    width: 170%;
+    margin-bottom: 20px;
+    .mealRemarkItemPadding {
+      padding: 5px 5px 12.5px;
+      .mealRemarkItemDishWay {
+        margin-top: 10px;
+      }
+    }
+    .mealRemarkInfoBox {
+      display: flex;
+      flex-direction: column;
+    }
+    .mealRemarkItemactiveBtn {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .mealRemarkName {
+      display: flex;
+      .mealRemarkItemAddBtn {
+        margin-left: 10px;
+      }
+      :global {
+        .ant-select {
+          flex: 1;
+          .ant-select-selection--multiple .ant-select-selection__placeholder {
+            color: #bfbfbf;
+          }
+        }
+      }
+    }
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    .mealRemarkItemBox {
+      .mealRemarkItemPadding {
+        padding: 5px 6px 12.5px;
+      }
+    }
+  }
+  @media (max-width: 1200px) {
+    .ant-card-padding-transition .ant-card-body {
+      padding: 7px 8px !important;
+    }
+
+    .mealRemarkItemBox {
+      width: 200%;
+    }
+  }
+
+}
+
+//菜品
+
+.dishDetailContent {
+  display: flex;
+  flex-wrap: wrap;
+  .dishDetailName {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    :global {
+      .ant-select {
+        width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .dishSpecName {
+    display: flex;
+    align-items: center;
+    :global {
+      .ant-select {
+        width: auto;
+        flex: 1;
+      }
+    }
+  }
+  //.dishDetailLimit {
+  //  width: 20%;
+  //}
+  //.dishDetailAddPrice {
+  //  width: 20%;
+  //}
+  //.dishDetailWeight {
+  //  width: 22%;
+  //}
+}
+
