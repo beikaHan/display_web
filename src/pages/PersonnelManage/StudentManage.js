@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,27 +20,30 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import StudentManageTable from '../../components/PersonnelManage/StudentManageTable.js';
-import Inputval from "../../components/QueryConditionItem/Inputval.js";
-import BtnSearch from "../../components/QueryConditionItem/BtnSearch.js";
-import DropDown from "../../components/QueryConditionItem/DropDown.js";
+import Inputval from '../../components/QueryConditionItem/Inputval.js';
+import BtnSearch from '../../components/QueryConditionItem/BtnSearch.js';
+import DropDown from '../../components/QueryConditionItem/DropDown.js';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import TeacherExhibitorsTable from '../../components/PersonnelManage/TeacherExhibitorsTable.js';
 
 import Date from '../../components/QueryConditionItem/Date.js';
 import styles from './Manage.less';
 import moment from 'moment';
-import {getCookie} from '../../utils';
+import { getCookie } from '../../utils';
 import url from '../../utils/ipconfig';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 @connect(state => ({
   classManage: state.classManage,
@@ -68,8 +71,8 @@ export default class VipManage extends Component {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
     dispatch({
       type: 'classManage/getClassAll',
     });
@@ -82,9 +85,9 @@ export default class VipManage extends Component {
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
@@ -103,11 +106,11 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["nameS", "studentNoS", "classTitleS", "statusS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['nameS', 'studentNoS', 'classTitleS', 'statusS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
@@ -129,7 +132,7 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -166,9 +169,10 @@ export default class VipManage extends Component {
     });
   };
   add = () => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const { addModalItem, addModalType, pagination, formValues } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
@@ -185,7 +189,7 @@ export default class VipManage extends Component {
         dispatch({
           type: 'classManage/uptStudentData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
@@ -206,7 +210,7 @@ export default class VipManage extends Component {
         dispatch({
           type: 'classManage/addStudentData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
@@ -220,10 +224,10 @@ export default class VipManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -241,16 +245,13 @@ export default class VipManage extends Component {
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
 
-
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -289,10 +290,10 @@ export default class VipManage extends Component {
     }
   };
 
-  handleInfo = (item) => {
+  handleInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     dispatch({
       type: 'classManage/uptStudentData',
       payload: {
@@ -311,10 +312,10 @@ export default class VipManage extends Component {
         });
       },
     });
-  }
-  handleTabChange = (key) => {
-    const {dispatch} = this.props;
-    console.log(key)
+  };
+  handleTabChange = key => {
+    const { dispatch } = this.props;
+    console.log(key);
     switch (key) {
       case 'teacherManage':
         dispatch(routerRedux.push('/personnelManage/teacher-manage'));
@@ -329,16 +330,16 @@ export default class VipManage extends Component {
         break;
     }
   };
-  handleExhibitors = (item) => {
+  handleExhibitors = item => {
     // TODO:参展详情
-    const {formValuesExhibitors, paginationExhibitors} = this.state;
+    const { formValuesExhibitors, paginationExhibitors } = this.state;
     this.props.dispatch({
       type: 'classManage/getTeacherDetail',
       payload: {
+        ...formValuesExhibitors,
+        ...paginationExhibitors,
         userId: item.id,
         type: 1,
-        ...formValuesExhibitors,
-        ...paginationExhibitors
       },
     });
     this.setState({
@@ -351,14 +352,14 @@ export default class VipManage extends Component {
       exhibitorsVisible: false,
     });
   };
-  handleExhibitorsTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValuesExhibitors} = this.state;
+  handleExhibitorsTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValuesExhibitors } = this.state;
 
     const params = {
+      ...formValuesExhibitors,
       page: pagination.current,
       rows: pagination.pageSize,
-      ...formValuesExhibitors,
     };
     this.setState({
       paginationExhibitors: {
@@ -372,10 +373,10 @@ export default class VipManage extends Component {
     });
   };
 
-  handleExhibitorsSearch = (e) => {
+  handleExhibitorsSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {paginationExhibitors} = this.state;
+    const { dispatch, form } = this.props;
+    const { paginationExhibitors } = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const values = {
@@ -409,78 +410,125 @@ export default class VipManage extends Component {
   };
   handleReportChange = (info, fileType) => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
       notification.success({
-        message: `${file.name} file uploaded successfully`
+        message: `${file.name} file uploaded successfully`,
       });
     }
   };
 
-
   renderForm() {
     let statusObj = [
-      <Option key={1} value={1}>启用</Option>,
-      <Option key={2} value={2}>禁用</Option>,
+      <Option key={1} value={1}>
+        启用
+      </Option>,
+      <Option key={2} value={2}>
+        禁用
+      </Option>,
     ];
     const reportUploadProps = {
       name: 'file',
       headers: {
         // 'Content-Type': 'multipart/form-data',
-        'JSESSIONID': getCookie() ? getCookie() : null
+        JSESSIONID: getCookie() ? getCookie() : null,
       },
       action: `${url.baseURL}/schoolStudent/import`,
       fileList: [],
-      onChange: (info) => this.handleReportChange(info),
+      onChange: info => this.handleReportChange(info),
     };
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'studentNoS'} con={'学号'} innerCon={'请输入学号'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <Inputval dispatch={this.props} dataInx={'nameS'} con={'姓名'} innerCon={'请输入姓名'} maxLength={'15'}
-                  size={{lg: 12, xl: 7, xxl: 6}}/>
-        <Inputval dispatch={this.props} dataInx={'classTitleS'} con={'班级'} innerCon={'请输入班级'} maxLength={'15'}
-                  size={{lg: 12, xl: 7, xxl: 6}}/>
-        <DropDown dispatch={this.props} size={{lg: 12, xl: 8, xxl: 6}} dataInx={'statusS'} con={'状态'} innerCon={'全部'}
-                  optObj={statusObj}/>
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'studentNoS'}
+          con={'学号'}
+          innerCon={'请输入学号'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <Inputval
+          dispatch={this.props}
+          dataInx={'nameS'}
+          con={'姓名'}
+          innerCon={'请输入姓名'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 7, xxl: 6 }}
+        />
+        <Inputval
+          dispatch={this.props}
+          dataInx={'classTitleS'}
+          con={'班级'}
+          innerCon={'请输入班级'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 7, xxl: 6 }}
+        />
+        <DropDown
+          dispatch={this.props}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+          dataInx={'statusS'}
+          con={'状态'}
+          innerCon={'全部'}
+          optObj={statusObj}
+        />
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={this.downModal}><Icon
-            type="download"/>模板下载</Button>
-          <span style={{display: 'inline-block'}}><Upload {...reportUploadProps}><Button type="primary"
-                                                                                         style={{marginLeft: '10px'}}><Icon
-            type="select"/>导入</Button></Upload></span>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={this.downModal}>
+            <Icon type="download" />
+            模板下载
+          </Button>
+          <span style={{ display: 'inline-block' }}>
+            <Upload {...reportUploadProps}>
+              <Button type="primary" style={{ marginLeft: '10px' }}>
+                <Icon type="select" />
+                导入
+              </Button>
+            </Upload>
+          </span>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {classManage: {loading: ruleLoading, studentData, studentItem, classDataAll, teacherDetailData}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, detailTitle, exhibitorsVisible} = this.state;
+    const {
+      classManage: {
+        loading: ruleLoading,
+        studentData,
+        studentItem,
+        classDataAll,
+        teacherDetailData,
+      },
+      form: { getFieldDecorator },
+    } = this.props;
+    const { addVisible, addModalTitle, addModalType, detailTitle, exhibitorsVisible } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     let classObj = [];
-    classDataAll && classDataAll.map((el) => {
-      classObj.push(
-        <Option value={el.id} key={el.id}>{el.title}</Option>
-      )
-    })
+    classDataAll &&
+      classDataAll.map(el => {
+        classObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.title}
+          </Option>
+        );
+      });
 
     let tabList = [
-      {key: 'teacherManage', tab: '教师管理'},
-      {key: 'studentManage', tab: '学生管理'},
-      {key: 'classManage', tab: '班级管理'},
+      { key: 'teacherManage', tab: '教师管理' },
+      { key: 'studentManage', tab: '学生管理' },
+      { key: 'classManage', tab: '班级管理' },
     ];
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -488,11 +536,7 @@ export default class VipManage extends Component {
       </Menu>
     );
     return (
-      <PageHeaderLayout
-        tabList={tabList}
-        activeIndex={1}
-        onTabChange={this.handleTabChange}
-      >
+      <PageHeaderLayout tabList={tabList} activeIndex={1} onTabChange={this.handleTabChange}>
         <Card bordered={false}>
           <div className={styles.classManageList}>
             <div className={styles.classManageListForm}>
@@ -500,12 +544,12 @@ export default class VipManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -523,67 +567,63 @@ export default class VipManage extends Component {
             />
           </div>
         </Card>
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
             <FormItem label="学号" {...formItemLayout}>
               {getFieldDecorator('studentNo', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.studentNo : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.studentNo : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入学号',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入学号'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入学号'} maxLength={100} />)}
             </FormItem>
             <FormItem label="姓名" {...formItemLayout}>
               {getFieldDecorator('name', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.name : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.name : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入姓名',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入姓名'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入姓名'} maxLength={100} />)}
             </FormItem>
             <FormItem label="手机号" {...formItemLayout}>
               {getFieldDecorator('phone', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.phone : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.phone : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入手机号',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入手机号'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入手机号'} maxLength={100} />)}
             </FormItem>
 
             <FormItem label="密码" {...formItemLayout}>
               {getFieldDecorator('password', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.password : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.password : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入密码',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入密码'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入密码'} maxLength={100} />)}
             </FormItem>
             <FormItem label="性别" {...formItemLayout}>
               {getFieldDecorator('sex', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.sex : 1,
-                },
-              )(
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.sex : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>男</Radio>
                   <Radio value={2}>女</Radio>
@@ -592,9 +632,8 @@ export default class VipManage extends Component {
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.status : 1,
-                },
-              )(
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.status : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
@@ -603,31 +642,32 @@ export default class VipManage extends Component {
             </FormItem>
             <FormItem label="班级" {...formItemLayout}>
               {getFieldDecorator('classId', {
-                  initialValue: addModalType === 'edit' && studentItem ? studentItem.classId : '',
-                },
-              )(
-                <Select placeholder="请选择">
-                  {classObj}
-                </Select>
-              )}
+                initialValue: addModalType === 'edit' && studentItem ? studentItem.classId : '',
+              })(<Select placeholder="请选择">{classObj}</Select>)}
             </FormItem>
           </Form>
         </Modal>
-        <Modal title={detailTitle + ': 参展详情'}
-               visible={exhibitorsVisible}
-               onOk={this.exhibitorsHide}
-               onCancel={() => this.exhibitorsHide()}
-               className={styles.detailModal}
-               footer={[
-                 <Button key="submit" type="primary" onClick={this.exhibitorsHide}
-                         style={{margin: 'auto', padding: '0 50px'}}>确认</Button>,
-               ]}
+        <Modal
+          title={detailTitle + ': 参展详情'}
+          visible={exhibitorsVisible}
+          onOk={this.exhibitorsHide}
+          onCancel={() => this.exhibitorsHide()}
+          className={styles.detailModal}
+          footer={[
+            <Button
+              key="submit"
+              type="primary"
+              onClick={this.exhibitorsHide}
+              style={{ margin: 'auto', padding: '0 50px' }}
+            >
+              确认
+            </Button>,
+          ]}
         >
           <div className={styles.classManageListForm}>
             <Form onSubmit={this.handleExhibitorsSearch} layout="inline">
-              <Date dispatch={this.props} con={'日期期间'} size={{lg: 20, xl: 20, xxl: 20}}/>
-              <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 1, xl: 1, xxl: 1}}/>
-
+              <Date dispatch={this.props} con={'日期期间'} size={{ lg: 20, xl: 20, xxl: 20 }} />
+              <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 1, xl: 1, xxl: 1 }} />
             </Form>
           </div>
           <TeacherExhibitorsTable
@@ -639,7 +679,6 @@ export default class VipManage extends Component {
             certificateInfo={this.certificateInfo}
           />
         </Modal>
-
       </PageHeaderLayout>
     );
   }

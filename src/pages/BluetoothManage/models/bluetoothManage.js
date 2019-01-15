@@ -1,20 +1,17 @@
-import {
-  memberList, updateMemberList
-} from '../../../services/PersonnelManage';
+import { memberList, updateMemberList } from '../../../services/PersonnelManage';
 import moment from 'moment';
-import {notification} from 'antd';
-import {validResult} from "../../../utils/utilsValid";
+import { notification } from 'antd';
+import { validResult } from '../../../utils/utilsValid';
 import {
-  addSchoolBluetoothData, delSchoolBluetooth,
+  addSchoolBluetoothData,
+  delSchoolBluetooth,
   getSchoolBluetooth,
   getSchoolBluetoothItem,
   uptSchoolBluetoothItem,
   getRecourseList,
-  getBluetoothAll
+  getBluetoothAll,
 } from '../../../services/BluetoothManage';
-import {
-  getSchoolMissionAll
-} from '../../../services/SchoolMissionManage';
+import { getSchoolMissionAll } from '../../../services/SchoolMissionManage';
 
 export default {
   namespace: 'bluetoothManage',
@@ -27,11 +24,11 @@ export default {
       pagination: {},
     },
     recourseList: [],
-    bluetoothAll: []
+    bluetoothAll: [],
   },
 
   subscriptions: {
-    setup({dispatch, history}) {
+    setup({ dispatch, history }) {
       /*dispatch({
         type: 'init',
       })*/
@@ -39,29 +36,30 @@ export default {
   },
 
   effects: {
-    * getRecourseList({payload, callback}, {call, select, put}) {
+    *getRecourseList({ payload, callback }, { call, select, put }) {
       let params = {
         type: payload && payload.type ? payload.type : 1,
       };
-      let result, taskTemp = [];
-      if( payload && payload.type == 8){
+      let result,
+        taskTemp = [];
+      if (payload && payload.type == 8) {
         result = yield call(getSchoolMissionAll, {});
         if (!validResult(result)) {
           return;
         }
-        for(var i=0; i<result.data.list.length; i++){
-          if(result.data.list[i].targetType == 1){
-            taskTemp.push(result.data.list[i])
+        for (var i = 0; i < result.data.list.length; i++) {
+          if (result.data.list[i].targetType == 1) {
+            taskTemp.push(result.data.list[i]);
           }
         }
 
         yield put({
           type: 'saveCP',
           payload: {
-            recourseList: taskTemp
+            recourseList: taskTemp,
           },
         });
-      }else{
+      } else {
         result = yield call(getRecourseList, params);
         if (!validResult(result)) {
           return;
@@ -69,13 +67,12 @@ export default {
         yield put({
           type: 'saveCP',
           payload: {
-            recourseList: result.data.items
+            recourseList: result.data.items,
           },
         });
       }
-
     },
-    * getBluetoothAll({payload, callback}, {call, select, put}) {
+    *getBluetoothAll({ payload, callback }, { call, select, put }) {
       let params = {
         type: payload && payload.type ? payload.type : 1,
       };
@@ -86,11 +83,11 @@ export default {
       yield put({
         type: 'saveCP',
         payload: {
-          bluetoothAll: result.data.list
+          bluetoothAll: result.data.list,
         },
       });
     },
-    * getSchoolBluetoothList({payload, callback}, {call, select, put}) {
+    *getSchoolBluetoothList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -101,7 +98,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -115,11 +112,11 @@ export default {
       });
     },
 
-    * addSchoolBluetoothData({payload, callback}, {call, select, put}) {
+    *addSchoolBluetoothData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addSchoolBluetoothData, params);
       if (!validResult(result)) {
         return;
@@ -136,27 +133,32 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolBluetoothItem({payload, callback}, {call, select, put}) {
+    *getSchoolBluetoothItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getSchoolBluetoothItem, params);
       if (!validResult(result)) {
         return;
       }
-
+      yield put({
+        type: 'getRecourseList',
+        payload: {
+          type: result.data.schoolBluetooth.type,
+        },
+      });
       yield put({
         type: 'saveCP',
         payload: {
-          schoolBluetoothItem: result.data.schoolBluetooth
+          schoolBluetoothItem: result.data.schoolBluetooth,
         },
       });
     },
 
-    * uptSchoolBluetoothData({payload, callback}, {call, select, put}) {
+    *uptSchoolBluetoothData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptSchoolBluetoothItem, params);
       if (!validResult(result)) {
         return;
@@ -174,10 +176,10 @@ export default {
       if (callback) callback();
     },
 
-    * delSchoolBluetoothData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolBluetoothData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchoolBluetooth, params);
       if (!validResult(result)) {
@@ -216,4 +218,4 @@ export default {
       };
     },
   },
-}
+};

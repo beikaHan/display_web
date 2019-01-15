@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,10 +20,10 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import CustomManageTable from '../../components/ItemBankManage/CustomManageTable.js';
-import Inputval from "../../components/QueryConditionItem/Inputval.js";
-import BtnSearch from "../../components/QueryConditionItem/BtnSearch.js";
+import Inputval from '../../components/QueryConditionItem/Inputval.js';
+import BtnSearch from '../../components/QueryConditionItem/BtnSearch.js';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Manage.less';
@@ -31,13 +31,19 @@ import moment from 'moment';
 import DropDown from '../../components/QueryConditionItem/DropDown';
 import AddCustom from '../../components/ItemBankManage/AddCustom';
 import url from '../../utils/ipconfig';
+import Date from '../../components/QueryConditionItem/Date';
+import AddCustomTable from '../../components/ItemBankManage/AddCustomTable';
+import ItemManageTable from '../../components/ItemBankManage/ItemManageTable';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 @connect(state => ({
   itemBankManage: state.itemBankManage,
@@ -56,12 +62,19 @@ export default class VipManage extends Component {
     addVisible: false,
     selectedRows: [],
     resourceData: [],
-    itemId: ''
+    itemId: '',
+    selectQuestionVisible: false,
+    formValuesAddCustom: {},
+    paginationAddCustom: {
+      rows: 10,
+      page: 1,
+    },
+    selectedAddCustomRows: [],
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
     dispatch({
       type: 'itemBankManage/getSchoolQuestionTopicAll',
     });
@@ -77,9 +90,9 @@ export default class VipManage extends Component {
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
@@ -98,11 +111,11 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["titleS", "levelS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['titleS', 'cusLevelS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
@@ -124,7 +137,7 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -132,23 +145,28 @@ export default class VipManage extends Component {
 
   addShow = (type, item) => {
     const that = this;
-    let title = '', itemId = '';
+    let title = '',
+      itemId = '';
     if (type === 'edit') {
       console.log(item);
-      title = '编辑', itemId = item.id;
+      (title = '编辑'), (itemId = item.id);
       this.props.dispatch({
         type: 'itemBankManage/getSchoolCustomTestItem',
         payload: {
           id: item.id,
         },
-        callback: (items) => {
-          console.log(items)
+        callback: items => {
+          console.log(items);
+          let ss = items.map(row => row.id);
+          console.log(ss);
           if (items && items.length > 0) {
             that.setState({
-              resourceData: items
-            })
+              resourceData: items,
+              selectedAddCustomRows: items,
+              selectedRowKeys: items.map(row => row.id),
+            });
           }
-        }
+        },
       });
     } else {
       title = '新增';
@@ -158,7 +176,7 @@ export default class VipManage extends Component {
       addModalTitle: title,
       addModalType: type,
       addModalItem: item,
-      itemId: itemId
+      itemId: itemId,
     });
   };
   addHide = () => {
@@ -169,41 +187,53 @@ export default class VipManage extends Component {
       addModalType: '',
       addModalItem: '',
       itemId: '',
-      resourceData: [{
-        key: 0,
-        type: 1,
-        resourceId: null,
-        questionBankId: null
-      }],
+      resourceData: [
+        {
+          key: 0,
+          type: 1,
+          resourceId: null,
+          questionBankId: null,
+        },
+      ],
+      selectedAddCustomRows: [],
+      selectedRowKeys: [],
     });
   };
   add = () => {
-    let items = this.state.resourceData
-    const {dispatch, form, itemBankManage: {questionBankId}} = this.props;
-    const {addModalItem, addModalType, pagination, formValues} = this.state;
-    let title = '', that = this;
+    // let items = this.state.resourceData
+    let items = [];
+    const {
+      dispatch,
+      form,
+      itemBankManage: { questionBankId },
+    } = this.props;
+    const {
+      addModalItem,
+      addModalType,
+      pagination,
+      formValues,
+      selectedAddCustomRows,
+    } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
-      // if (fieldsValue.type != 1) {
-      //   items[0].questionBankId = questionBankId
-      //   items[0].type = fieldsValue.type
-      // }
+
       if (fieldsValue.type == 3) {
-        if (fieldsValue.schoolQuestionBankId.length <= 0) {
+        if (selectedAddCustomRows.length <= 0) {
           notification.error({
             message: '请选择题目',
           });
-          return
+          return;
         } else {
-          for (let i = 0; i < fieldsValue.schoolQuestionBankId.length; i++) {
+          for (let i = 0; i < selectedAddCustomRows.length; i++) {
             items.push({
-              questionBankId: fieldsValue.schoolQuestionBankId[i].value,
-              type: 3
-            })
+              questionBankId: selectedAddCustomRows[i].id,
+              type: 3,
+            });
           }
         }
-
       }
 
       if (addModalType === 'edit') {
@@ -213,11 +243,14 @@ export default class VipManage extends Component {
           items: items,
         };
         delete values.titleS;
+        delete values.cusLevelS;
         delete values.levelS;
+        delete values.contentS;
+        delete values.questionTypeS;
         dispatch({
           type: 'itemBankManage/uptSchoolCustomTestData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
@@ -233,11 +266,14 @@ export default class VipManage extends Component {
           items: items,
         };
         delete values.titleS;
+        delete values.cusLevelS;
         delete values.levelS;
+        delete values.contentS;
+        delete values.questionTypeS;
         dispatch({
           type: 'itemBankManage/addSchoolCustomTestData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
@@ -251,10 +287,10 @@ export default class VipManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -272,15 +308,13 @@ export default class VipManage extends Component {
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
 
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -318,10 +352,10 @@ export default class VipManage extends Component {
         break;
     }
   };
-  handleInfo = (item) => {
+  handleInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     dispatch({
       type: 'itemBankManage/uptSchoolCustomTestData',
       payload: {
@@ -340,9 +374,9 @@ export default class VipManage extends Component {
         });
       },
     });
-  }
-  handleTabChange = (key) => {
-    const {dispatch} = this.props;
+  };
+  handleTabChange = key => {
+    const { dispatch } = this.props;
     switch (key) {
       case 'knowPointsManage':
         dispatch(routerRedux.push('/itemBankManage/know-points-manage'));
@@ -360,116 +394,253 @@ export default class VipManage extends Component {
         break;
     }
   };
-  downloadQrcode = (item) => {
+  downloadQrcode = item => {
     window.open(`${url.baseURL}/schoolCustomTest/qrcode/${item.id}`);
-  }
-  selectKnow = (val) => {
+  };
+  selectKnow = val => {
     if (val != 3) {
       this.props.dispatch({
         type: 'itemBankManage/getSchoolCustomGenerateData',
         payload: {
-          type: val
-        }
-      })
+          type: val,
+        },
+      });
     }
-
-  }
+  };
 
   changeUploadList = (type, key) => {
-    let resourceData = this.state.resourceData && this.state.resourceData.length > 0 ? this.state.resourceData.slice(0) : []
+    let resourceData =
+      this.state.resourceData && this.state.resourceData.length > 0
+        ? this.state.resourceData.slice(0)
+        : [];
     if (type === 'plus') {
-      let temp = 0, sort = 0;
+      let temp = 0,
+        sort = 0;
       for (let i = 0; i < resourceData.length; i++) {
         if (i === 0) {
-          temp = resourceData[i].key
-          sort = resourceData[i].sort
+          temp = resourceData[i].key;
+          sort = resourceData[i].sort;
         } else {
           if (resourceData[i].sort > resourceData[i - 1].sort) {
-            sort = resourceData[i].sort
+            sort = resourceData[i].sort;
           } else {
-            sort = resourceData[i - 1].sort
+            sort = resourceData[i - 1].sort;
           }
           if (resourceData[i].key > resourceData[i - 1].key) {
-            temp = resourceData[i].key
+            temp = resourceData[i].key;
           } else {
-            temp = resourceData[i - 1].key
+            temp = resourceData[i - 1].key;
           }
         }
-
       }
       resourceData.push({
         key: temp + 1,
         type: 1,
         resourceId: null,
-        questionBankId: null
-      })
+        questionBankId: null,
+      });
     } else {
       for (let i = 0; i < resourceData.length; i++) {
         if (key === resourceData[i].key) {
-          resourceData.splice(i, 1)
+          resourceData.splice(i, 1);
           break;
         }
       }
     }
     this.setState({
-      resourceData: resourceData
-    })
+      resourceData: resourceData,
+    });
   };
   onSingleChange = (val, key) => {
-    let resourceData = this.state.resourceData && this.state.resourceData.length > 0 ? this.state.resourceData.slice(0) : []
+    let resourceData =
+      this.state.resourceData && this.state.resourceData.length > 0
+        ? this.state.resourceData.slice(0)
+        : [];
     for (let i = 0; i < resourceData.length; i++) {
       if (key === resourceData[i].key) {
-        resourceData[i].questionBankId = val
+        resourceData[i].questionBankId = val;
         break;
       }
     }
     this.setState({
-      resourceData: resourceData
-    })
+      resourceData: resourceData,
+    });
   };
   onUploadChange = (val, key) => {
-    let resourceData = this.state.resourceData && this.state.resourceData.length > 0 ? this.state.resourceData.slice(0) : []
+    let resourceData =
+      this.state.resourceData && this.state.resourceData.length > 0
+        ? this.state.resourceData.slice(0)
+        : [];
     for (let i = 0; i < resourceData.length; i++) {
       if (key === resourceData[i].key) {
-        resourceData[i].type = val
+        resourceData[i].type = val;
         break;
       }
     }
     this.setState({
-      resourceData: resourceData
-    })
+      resourceData: resourceData,
+    });
   };
 
+  selectQuestions = flag => {
+    if (flag) {
+      const { dispatch, form } = this.props;
+      const { paginationAddCustom } = this.state;
+      const that = this;
+      const values = {
+        ...paginationAddCustom,
+        page: 1,
+      };
+      this.setState({
+        formValuesAddCustom: values,
+        paginationAddCustom: {
+          ...paginationAddCustom,
+          page: 1,
+        },
+      });
+
+      dispatch({
+        type: 'itemBankManage/getSchoolQuestionBankList',
+        payload: values,
+        callback: () => {
+          that.setState({
+            selectQuestionVisible: true,
+          });
+        },
+      });
+    } else {
+      this.setState({
+        selectQuestionVisible: false,
+      });
+    }
+  };
+  handleAddCustomTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValuesAddCustom } = this.state;
+
+    const params = {
+      ...formValuesAddCustom,
+      page: pagination.current,
+      rows: pagination.pageSize,
+    };
+    this.setState({
+      paginationAddCustom: {
+        rows: pagination.pageSize,
+        page: pagination.current,
+      },
+    });
+    dispatch({
+      type: 'itemBankManage/getSchoolQuestionBankList',
+      payload: params,
+    });
+  };
+  handleAddCustomSearch = e => {
+    // debugger
+    e.preventDefault();
+    const { dispatch, form } = this.props;
+    const { paginationAddCustom, formValuesAddCustom } = this.state;
+    form.validateFields(['contentS', 'levelS', 'questionTypeS'], (err, fieldsValue) => {
+      // if (err) return;
+      const values = {
+        ...formValuesAddCustom,
+        ...paginationAddCustom,
+        page: 1,
+      };
+      this.setState({
+        formValuesExhibitors: values,
+        paginationExhibitors: {
+          ...paginationAddCustom,
+          page: 1,
+        },
+      });
+
+      dispatch({
+        type: 'itemBankManage/getSchoolQuestionBankList',
+        payload: values,
+      });
+    });
+  };
+
+  handleAddCustomRows = rows => {
+    this.setState({
+      selectedAddCustomRows: rows,
+      selectedRowKeys: rows.map(row => row.id),
+    });
+  };
+  selectQuestionsHide = () => {
+    const { resourceData } = this.state;
+    this.setState({
+      selectQuestionVisible: false,
+      selectedAddCustomRows: resourceData,
+      selectedRowKeys: resourceData.map(row => row.id),
+    });
+  };
   renderForm() {
     let statusObj = [
-      <Option key={1} value={1}>简单</Option>,
-      <Option key={2} value={2}>普通</Option>,
-      <Option key={3} value={3}>困难</Option>,
+      <Option key={1} value={1}>
+        简单
+      </Option>,
+      <Option key={2} value={2}>
+        普通
+      </Option>,
+      <Option key={3} value={3}>
+        困难
+      </Option>,
     ];
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'titleS'} con={'组题标题'} innerCon={'请输入组题标题'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <DropDown dispatch={this.props} size={{lg: 12, xl: 8, xxl: 6}} dataInx={'levelS'} con={'难易度'} innerCon={'全部'}
-                  optObj={statusObj}/>
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'titleS'}
+          con={'组题标题'}
+          innerCon={'请输入组题标题'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <DropDown
+          dispatch={this.props}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+          dataInx={'cusLevelS'}
+          con={'难易度'}
+          innerCon={'全部'}
+          optObj={statusObj}
+        />
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {itemBankManage: {loading: ruleLoading, schoolCustomTestData, schoolCustomTestItem, schoolQuestionBankDataAll, schoolCustomTestQuestions, schoolQuestionTopicDataAll}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, itemId, itemDetails, resourceData,} = this.state;
+    const {
+      itemBankManage: {
+        loading: ruleLoading,
+        schoolCustomTestData,
+        schoolCustomTestItem,
+        schoolQuestionBankDataAll,
+        schoolQuestionBankData,
+        schoolQuestionTopicDataAll,
+      },
+      form: { getFieldDecorator },
+    } = this.props;
+    const {
+      addVisible,
+      addModalTitle,
+      selectQuestionVisible,
+      itemId,
+      selectedRowKeys,
+      resourceData,
+    } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     const menu = (
@@ -477,18 +648,37 @@ export default class VipManage extends Component {
         <Menu.Item key="del">批量删除</Menu.Item>
       </Menu>
     );
+    let statusObj = [
+      <Option key={'1'} value={'1'}>
+        简单
+      </Option>,
+      <Option key={'2'} value={'2'}>
+        普通
+      </Option>,
+      <Option key={'3'} value={'3'}>
+        困难
+      </Option>,
+    ];
+    let questionTypeObj = [
+      <Option key={'1'} value={'1'}>
+        单选
+      </Option>,
+      <Option key={'2'} value={'2'}>
+        多选
+      </Option>,
+      // <Option key={'3'} value={'3'}>选择</Option>,
+      <Option key={'4'} value={'4'}>
+        判断
+      </Option>,
+    ];
     let tabList = [
-      {key: 'knowPointsManage', tab: '知识点管理'},
-      {key: 'itemManage', tab: '题库管理'},
-      {key: 'customManage', tab: '自定义组题'},
-      {key: 'groupManage', tab: '组题规则'},
+      { key: 'knowPointsManage', tab: '知识点管理' },
+      { key: 'itemManage', tab: '题库管理' },
+      { key: 'customManage', tab: '自定义组题' },
+      { key: 'groupManage', tab: '组题规则' },
     ];
     return (
-      <PageHeaderLayout
-        tabList={tabList}
-        activeIndex={2}
-        onTabChange={this.handleTabChange}
-      >
+      <PageHeaderLayout tabList={tabList} activeIndex={2} onTabChange={this.handleTabChange}>
         <Card bordered={false}>
           <div className={styles.classManageList}>
             <div className={styles.classManageListForm}>
@@ -496,12 +686,12 @@ export default class VipManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -519,24 +709,94 @@ export default class VipManage extends Component {
             />
           </div>
         </Card>
+
+        <Modal
+          title="选择题目"
+          visible={selectQuestionVisible}
+          onOk={() => this.selectQuestions(false)}
+          onCancel={() => this.selectQuestionsHide()}
+          className={styles.detailModal}
+          footer={[
+            <Button
+              key="submit"
+              type="primary"
+              onClick={() => this.selectQuestions(false)}
+              style={{ margin: 'auto', padding: '0 50px' }}
+            >
+              确认
+            </Button>,
+            <Button
+              key="cancel"
+              onClick={() => this.selectQuestionsHide()}
+              style={{ margin: 'auto', padding: '0 50px' }}
+            >
+              取消
+            </Button>,
+          ]}
+        >
+          <div className={styles.classManageListForm}>
+            <Form onSubmit={this.handleAddCustomSearch} layout="inline">
+              <Inputval
+                dispatch={this.props}
+                dataInx={'contentS'}
+                con={'题目内容'}
+                innerCon={'请输入题目内容'}
+                maxLength={'15'}
+                size={{ lg: 12, xl: 8, xxl: 6 }}
+              />
+              <DropDown
+                dispatch={this.props}
+                size={{ lg: 12, xl: 8, xxl: 6 }}
+                dataInx={'levelS'}
+                con={'难易度'}
+                innerCon={'全部'}
+                optObj={statusObj}
+              />
+              <DropDown
+                dispatch={this.props}
+                size={{ lg: 12, xl: 8, xxl: 6 }}
+                dataInx={'questionTypeS'}
+                con={'题目类型'}
+                innerCon={'全部'}
+                optObj={questionTypeObj}
+              />
+              <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 1, xl: 1, xxl: 1 }} />
+            </Form>
+          </div>
+          <AddCustomTable
+            data={schoolQuestionBankData}
+            onChange={this.handleAddCustomTableChange}
+            onSelectRow={this.handleAddCustomRows}
+            selectedRowKeys={selectedRowKeys}
+            // dispatch={this.props.dispatch}
+            // myData={this.myData}
+            // certificateInfo={this.certificateInfo}
+          />
+        </Modal>
+
         {/*新增编辑*/}
-        {addVisible ? <AddCustom
-          dispatch={this.props}
-          addVisible={addVisible}
-          addShow={this.addShow}
-          addHide={this.addHide}
-          add={this.add}
-          itemId={itemId}
-          addModalTitle={addModalTitle}
-          itemDetails={schoolCustomTestItem}
-          items={resourceData}
-          selectKnow={this.selectKnow}
-          schoolQuestionBankDataAll={schoolQuestionBankDataAll}
-          changeUploadList={this.changeUploadList}
-          onUploadChange={this.onUploadChange}
-          onSingleChange={this.onSingleChange}
-          schoolQuestionTopicDataAll={schoolQuestionTopicDataAll}
-        /> : ''}
+        {addVisible ? (
+          <AddCustom
+            dispatch={this.props}
+            addVisible={addVisible}
+            addShow={this.addShow}
+            addHide={this.addHide}
+            add={this.add}
+            itemId={itemId}
+            addModalTitle={addModalTitle}
+            itemDetails={schoolCustomTestItem}
+            items={resourceData}
+            selectKnow={this.selectKnow}
+            schoolQuestionBankDataAll={schoolQuestionBankDataAll}
+            changeUploadList={this.changeUploadList}
+            onUploadChange={this.onUploadChange}
+            onSingleChange={this.onSingleChange}
+            selectQuestions={this.selectQuestions}
+            schoolQuestionTopicDataAll={schoolQuestionTopicDataAll}
+          />
+        ) : (
+          ''
+        )}
       </PageHeaderLayout>
     );
   }

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,25 +20,28 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import DocumentManageTable from '../../components/TeachingManage/DocumentManageTable.js';
-import Inputval from "../../components/QueryConditionItem/Inputval.js";
-import BtnSearch from "../../components/QueryConditionItem/BtnSearch.js";
-import DateAndTime from "../../components/QueryConditionItem/DateAndTime.js";
+import Inputval from '../../components/QueryConditionItem/Inputval.js';
+import BtnSearch from '../../components/QueryConditionItem/BtnSearch.js';
+import DateAndTime from '../../components/QueryConditionItem/DateAndTime.js';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Manage.less';
 import moment from 'moment';
-import {getCookie} from "../../utils";
-import url from "../../utils/ipconfig";
+import { getCookie } from '../../utils';
+import url from '../../utils/ipconfig';
 import DropDown from '../../components/QueryConditionItem/DropDown';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 function getBase64Img(img, callback) {
   const reader = new FileReader();
@@ -60,7 +63,7 @@ function beforeUploadImg(file) {
 
 function beforeUpload(file) {
   // debugger
-  console.log(file)
+  console.log(file);
   const isPDF = file.type === 'application/pdf';
   if (!isPDF) {
     message.error('You can only upload PDF file!');
@@ -90,35 +93,34 @@ export default class DocumentManage extends Component {
     addVisible: false,
     selectedRows: [],
     loading: false,
-    thumbnailResourceId: ''
+    thumbnailResourceId: '',
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
     dispatch({
       type: 'teachingManage/getClassifyAll',
-
     });
     dispatch({
       type: 'teachingManage/getSchoolMaterialList',
       payload: {
         ...pagination,
         ...formValues,
-        type: 4
+        type: 4,
       },
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
       page: pagination.current,
       rows: pagination.pageSize,
-      type: 4
+      type: 4,
     };
     this.setState({
       pagination: {
@@ -132,17 +134,17 @@ export default class DocumentManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["titleS", "classifyIdS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['titleS', 'classifyIdS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
         ...pagination,
         page: 1,
-        type: 4
+        type: 4,
       };
       this.setState({
         formValues: values,
@@ -159,7 +161,7 @@ export default class DocumentManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -174,7 +176,7 @@ export default class DocumentManage extends Component {
         type: 'teachingManage/getSchoolMaterialItem',
         payload: {
           id: item.id,
-          type: 4
+          type: 4,
         },
       });
     } else {
@@ -201,37 +203,54 @@ export default class DocumentManage extends Component {
     this.props.dispatch({
       type: 'teachingManage/saveCP',
       payload: {
-        documentItem: {}
+        documentItem: {},
       },
     });
   };
   add = () => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues, thumbnailResourceId, resourceId} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const {
+      addModalItem,
+      addModalType,
+      pagination,
+      formValues,
+      thumbnailResourceId,
+      resourceId,
+    } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
       if (addModalType === 'edit') {
-        if ((resourceId == undefined || resourceId == '') && (addModalItem.resourceId == undefined || addModalItem.resourceId == '')) {
+        if (
+          (resourceId == undefined || resourceId == '') &&
+          (addModalItem.resourceId == undefined || addModalItem.resourceId == '')
+        ) {
           notification.error({
             message: '请上传文档',
           });
-          return
+          return;
         }
-        if ((thumbnailResourceId == undefined || thumbnailResourceId == '') && (addModalItem.thumbnailResourceId == undefined || addModalItem.thumbnailResourceId == '')) {
+        if (
+          (thumbnailResourceId == undefined || thumbnailResourceId == '') &&
+          (addModalItem.thumbnailResourceId == undefined || addModalItem.thumbnailResourceId == '')
+        ) {
           notification.error({
             message: '请上传缩略图',
           });
-          return
+          return;
         }
         values = {
           ...fieldsValue,
           id: addModalItem.id,
           adminUserId: addModalItem.adminUserId,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : fieldsValue.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : fieldsValue.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : fieldsValue.resourceId,
-          type: 4
+          type: 4,
         };
         delete values.titleS;
         delete values.classifyIdS;
@@ -242,11 +261,11 @@ export default class DocumentManage extends Component {
         dispatch({
           type: 'teachingManage/uptSchoolMaterialData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
-              type: 4
+              type: 4,
             },
           },
           callback: () => {
@@ -258,19 +277,22 @@ export default class DocumentManage extends Component {
           notification.error({
             message: '请上传文档',
           });
-          return
+          return;
         }
         if (thumbnailResourceId == undefined || thumbnailResourceId == '') {
           notification.error({
             message: '请上传缩略图',
           });
-          return
+          return;
         }
         values = {
           ...fieldsValue,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : fieldsValue.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : fieldsValue.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : fieldsValue.resourceId,
-          type: 4
+          type: 4,
         };
         delete values.titleS;
         delete values.classifyIdS;
@@ -280,11 +302,11 @@ export default class DocumentManage extends Component {
         dispatch({
           type: 'teachingManage/addSchoolMaterialData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
-              type: 4
+              type: 4,
             },
           },
           callback: () => {
@@ -294,10 +316,10 @@ export default class DocumentManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -311,20 +333,18 @@ export default class DocumentManage extends Component {
             searchVal: {
               ...formValues,
               ...pagination,
-              type: 4
+              type: 4,
             },
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
 
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -342,7 +362,7 @@ export default class DocumentManage extends Component {
                 searchVal: {
                   ...formValues,
                   ...pagination,
-                  type: 4
+                  type: 4,
                 },
               },
               callback: () => {
@@ -363,36 +383,38 @@ export default class DocumentManage extends Component {
         break;
     }
   };
-  handleChange = (info) => {
+  handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({uploading: true});
+      this.setState({ uploading: true });
       return;
     }
     if (info.file.status === 'done') {
-      debugger
+      debugger;
       this.setState({
         uploading: false,
-        resourceId: info.file.response.resource.id
-      })
+        resourceId: info.file.response.resource.id,
+      });
     }
-  }
-  handleChangeImg = (info) => {
+  };
+  handleChangeImg = info => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
+      console.log(info.file.response);
       // Get this url from response in real world.
-      getBase64Img(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: false,
-        thumbnailResourceId: info.file.response.resource.id
-      }));
+      getBase64Img(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+          thumbnailResourceId: info.file.response.resource.id,
+        })
+      );
     }
-  }
-  handleTabChange = (key) => {
-    const {dispatch} = this.props;
+  };
+  handleTabChange = key => {
+    const { dispatch } = this.props;
     switch (key) {
       case 'classifiedManage':
         dispatch(routerRedux.push('/teachingManage/classified-manage'));
@@ -415,65 +437,84 @@ export default class DocumentManage extends Component {
   };
 
   renderForm() {
-    const {teachingManage: {classifyAllData}} = this.props;
+    const {
+      teachingManage: { classifyAllData },
+    } = this.props;
     let recourseObj = [];
-    classifyAllData && classifyAllData.map((el) => {
-      recourseObj.push(
-        <Option value={el.id} key={el.id}>{el.title}</Option>
-      )
-    })
+    classifyAllData &&
+      classifyAllData.map(el => {
+        recourseObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.title}
+          </Option>
+        );
+      });
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'titleS'} con={'标题'} innerCon={'请输入标题'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <DropDown dispatch={this.props} size={{lg: 12, xl: 8, xxl: 6}} dataInx={'classifyIdS'} con={'分类搜索'}
-                  innerCon={'全部'}
-                  optObj={recourseObj}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'titleS'}
+          con={'标题'}
+          innerCon={'请输入标题'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <DropDown
+          dispatch={this.props}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+          dataInx={'classifyIdS'}
+          con={'分类搜索'}
+          innerCon={'全部'}
+          optObj={recourseObj}
+        />
 
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {teachingManage: {loading: ruleLoading, documentData, documentItem, classifyAllData}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, imageUrl, resourceId} = this.state;
+    const {
+      teachingManage: { loading: ruleLoading, documentData, documentItem, classifyAllData },
+      form: { getFieldDecorator },
+    } = this.props;
+    const { addVisible, addModalTitle, addModalType, imageUrl, resourceId } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     let classifyObj = [];
-    classifyAllData && classifyAllData.map((el) => {
-      classifyObj.push(
-        <Option value={el.id} key={el.id}>{el.title}</Option>
-      )
-    })
+    classifyAllData &&
+      classifyAllData.map(el => {
+        classifyObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.title}
+          </Option>
+        );
+      });
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="del">批量删除</Menu.Item>
       </Menu>
     );
     let tabList = [
-      {key: 'classifiedManage', tab: '分类管理'},
-      {key: 'videoManage', tab: '视频管理'},
-      {key: 'picManage', tab: '图片管理'},
-      {key: 'audioManage', tab: '音频管理'},
-      {key: 'documentManage', tab: '文档管理'},
+      { key: 'classifiedManage', tab: '分类管理' },
+      { key: 'videoManage', tab: '视频管理' },
+      { key: 'picManage', tab: '图片管理' },
+      { key: 'audioManage', tab: '音频管理' },
+      { key: 'documentManage', tab: '文档管理' },
     ];
     return (
-      <PageHeaderLayout
-        tabList={tabList}
-        activeIndex={4}
-        onTabChange={this.handleTabChange}
-      >
+      <PageHeaderLayout tabList={tabList} activeIndex={4} onTabChange={this.handleTabChange}>
         <Card bordered={false}>
           <div className={styles.classManageList}>
             <div className={styles.classManageListForm}>
@@ -481,12 +522,12 @@ export default class DocumentManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -504,38 +545,34 @@ export default class DocumentManage extends Component {
           </div>
         </Card>
 
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
             <FormItem label="文档标题" {...formItemLayout}>
               {getFieldDecorator('title', {
-                  initialValue: addModalType === 'edit' && documentItem ? documentItem.title : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && documentItem ? documentItem.title : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入文档标题',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入文档标题'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入文档标题'} maxLength={100} />)}
             </FormItem>
             <FormItem label="简介" {...formItemLayout}>
               {getFieldDecorator('content', {
-                  initialValue: addModalType === 'edit' && documentItem ? documentItem.content : '',
-                },
-              )(
-                <Input placeholder={'请输入简介'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && documentItem ? documentItem.content : '',
+              })(<Input placeholder={'请输入简介'} maxLength={100} />)}
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
-                  initialValue: addModalType === 'edit' && documentItem ? documentItem.status : 1,
-                },
-              )(
+                initialValue: addModalType === 'edit' && documentItem ? documentItem.status : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
@@ -544,71 +581,95 @@ export default class DocumentManage extends Component {
             </FormItem>
             <FormItem label="分类" {...formItemLayout}>
               {getFieldDecorator('classifyId', {
-                  initialValue: addModalType === 'edit' && documentItem && documentItem.classifyId ? documentItem.classifyId : classifyAllData && classifyAllData[0] ? classifyAllData[0].id : '',
-                },
-              )(
-                <Select placeholder={'请选择分类'}>
-                  {classifyObj}
-                </Select>
-              )}
+                initialValue:
+                  addModalType === 'edit' && documentItem && documentItem.classifyId
+                    ? documentItem.classifyId
+                    : classifyAllData && classifyAllData[0]
+                    ? classifyAllData[0].id
+                    : '',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择分类',
+                  },
+                ],
+              })(<Select placeholder={'请选择分类'}>{classifyObj}</Select>)}
             </FormItem>
             <FormItem label="文档上传" {...formItemLayout}>
               {getFieldDecorator('resourceId', {
-                  initialValue: addModalType === 'edit' && documentItem && documentItem.resourceId ? documentItem.resourceId : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' && documentItem && documentItem.resourceId
+                    ? documentItem.resourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '文档上传',
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   showUploadList={false}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUpload}
-                  onChange={this.handleChange}>
+                  onChange={this.handleChange}
+                >
                   <Button>
-                    <Icon
-                      type={this.state.uploading ? 'loading' : 'upload'}/> {resourceId ? '已有资源' : addModalType === 'edit' && documentItem.resourceUrl ? '已有资源' : 'Upload'}
+                    <Icon type={this.state.uploading ? 'loading' : 'upload'} />{' '}
+                    {resourceId
+                      ? '已有资源'
+                      : addModalType === 'edit' && documentItem.resourceUrl
+                      ? '已有资源'
+                      : 'Upload'}
                   </Button>
-                </Upload>,
+                </Upload>
               )}
             </FormItem>
             <FormItem label="缩略图" {...formItemLayout}>
               {getFieldDecorator('thumbnailResourceId', {
-                  initialValue: addModalType === 'edit' && documentItem && documentItem.thumbnailResourceId ? documentItem.thumbnailResourceId : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' && documentItem && documentItem.thumbnailResourceId
+                    ? documentItem.thumbnailResourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '缩略图',
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUploadImg}
-                  onChange={this.handleChangeImg}>
-                  {imageUrl ? <img src={imageUrl}
-                                   alt="avatar"/> : addModalType === 'edit' && documentItem && documentItem.thumbnailUrl ?
-                    <img src={documentItem.thumbnailUrl} alt="avatar"/> : <div>
-                      <Icon type={this.state.loading ? 'loading' : 'plus'}/>
+                  onChange={this.handleChangeImg}
+                >
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="avatar" />
+                  ) : addModalType === 'edit' && documentItem && documentItem.thumbnailUrl ? (
+                    <img src={documentItem.thumbnailUrl} alt="avatar" />
+                  ) : (
+                    <div>
+                      <Icon type={this.state.loading ? 'loading' : 'plus'} />
                       <div className="ant-upload-text">Upload</div>
-                    </div>}
+                    </div>
+                  )}
                 </Upload>
               )}
             </FormItem>
             <FormItem label="图片要求" {...formItemLayout}>
-            <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
+              <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
             </FormItem>
           </Form>
         </Modal>

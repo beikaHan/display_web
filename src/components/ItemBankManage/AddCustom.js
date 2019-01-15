@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import {
   Card,
@@ -18,16 +18,16 @@ import {
   Modal,
   notification,
   Checkbox,
-  TreeSelect
+  TreeSelect,
 } from 'antd';
-import {connect} from 'dva';
+import { connect } from 'dva';
 import styles from './index.less';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const {Option} = Select;
-const {TextArea} = Input;
+const { Option } = Select;
+const { TextArea } = Input;
 const CheckboxGroup = Checkbox.Group;
 
 @Form.create()
@@ -48,84 +48,85 @@ class DishEdit extends Component {
     const sider = document.querySelectorAll('.ant-layout-sider')[0];
     const width = `calc(100% - ${sider.style.width})`;
     if (this.state.width !== width) {
-      this.setState({width});
+      this.setState({ width });
     }
   };
 
   handleGoBack = () => {
     this.props.addHide();
   };
-  handleChange = (e) => {
-    e.preventDefault()
+  handleChange = e => {
+    e.preventDefault();
     this.props.add();
-  }
-  selectKnow = (e) => {
+  };
+  selectKnow = e => {
     this.props.selectKnow(e);
-  }
+  };
   changeUploadList = (type, key) => {
-    this.props.changeUploadList(type, key)
-
+    this.props.changeUploadList(type, key);
   };
 
   onUploadChange = (e, key) => {
-    this.props.onUploadChange(e.target.value, key)
+    this.props.onUploadChange(e.target.value, key);
   };
-  onSingleS = (e, key) => {
-    this.props.onSingleChange(e, key)
-  }
-  onSelectChange = (e) => {
-    this.props.onSelectChange(e.target.value)
-  }
-// 区域数据加载
-  handleLoadData = (dataForMap, gegionsChild) => {
-    for (var i = 0; i < dataForMap.length; i++) {
-      gegionsChild.push({
-        title: dataForMap[i].name,
-        value: dataForMap[i].id,
-        key: dataForMap[i].id,
-      })
-    }
-    return gegionsChild
+
+  onSelectChange = e => {
+    this.props.onSelectChange(e.target.value);
   };
+
+  selectQuestions = () => {
+    this.props.selectQuestions(true);
+  };
+
   renderForm() {
-    const {itemId, addVisible, itemDetails, schoolQuestionTopicDataAll, classifyDisplayData, addModalTitle, schoolQuestionBankDataAll, items} = this.props;
-    const {getFieldDecorator, getFieldValue} = this.props.dispatch.form;
+    const {
+      itemId,
+      addVisible,
+      itemDetails,
+      schoolQuestionTopicDataAll,
+      classifyDisplayData,
+      addModalTitle,
+      schoolQuestionBankDataAll,
+      items,
+    } = this.props;
+    const { getFieldDecorator, getFieldValue } = this.props.dispatch.form;
     const formItemLayout = {
-      labelCol: {span: 4},
+      labelCol: { span: 4 },
       wrapperCol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     let schoolQuestionBankObj = [];
-    schoolQuestionBankDataAll && schoolQuestionBankDataAll.map((el) => {
-      schoolQuestionBankObj.push(
-        {label: el.content, value: el.id}
-      )
-    })
+    schoolQuestionBankDataAll &&
+      schoolQuestionBankDataAll.map(el => {
+        schoolQuestionBankObj.push({ label: el.content, value: el.id });
+      });
 
     let schoolQuestionTopicObj = [];
-    schoolQuestionTopicDataAll && schoolQuestionTopicDataAll.map((el) => {
-      schoolQuestionTopicObj.push(
-        <Option value={el.id} key={el.id}>{el.content}</Option>
-      )
-    })
+    schoolQuestionTopicDataAll &&
+      schoolQuestionTopicDataAll.map(el => {
+        schoolQuestionTopicObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.content}
+          </Option>
+        );
+      });
 
-    const getBank = (questionData) => {
+    const getBank = questionData => {
       let arr = [];
-      if(questionData){
+      if (questionData) {
         for (let i = 0; i < questionData.length; i++) {
           arr.push({
             label: questionData[i].content,
             value: questionData[i].id,
             key: questionData[i].id,
             id: questionData[i].id,
-          })
+          });
         }
       }
-console.log(arr)
-      return arr
-    }
+      return arr;
+    };
     const gegionsTreeProps = {
       treeData: getBank(schoolQuestionBankDataAll),
       dropdownClassName: 'gegionsTree',
@@ -140,47 +141,60 @@ console.log(arr)
     return (
       <div className={styles.showAdd}>
         <div className={addVisible ? styles.add : styles.hideAdd}>
-          <div className={styles.nav}><Icon type="left" className={styles.icon}
-                                            onClick={this.handleGoBack}/> {addModalTitle}
+          <div className={styles.nav}>
+            <Icon type="left" className={styles.icon} onClick={this.handleGoBack} /> {addModalTitle}
           </div>
           <div className={styles.content}>
             <Form onSubmit={this.handleChange} layout="inline">
               <FormItem label="标题" {...formItemLayout} colon={false}>
                 {getFieldDecorator('title', {
                   initialValue: itemId != '' && itemDetails.title ? itemDetails.title : '',
-                  rules: [
-                    {required: true, message: '请输入标题'},
-                  ],
-                })(
-                  <Input placeholder={'请输入标题'} maxLength="30" autoComplete="off"/>,
-                )}
+                  rules: [{ required: true, message: '请输入标题' }],
+                })(<Input placeholder={'请输入标题'} maxLength="30" autoComplete="off" />)}
               </FormItem>
               <FormItem label="提示语" {...formItemLayout} colon={false}>
                 {getFieldDecorator('content', {
                   initialValue: itemId != '' && itemDetails.content ? itemDetails.content : '',
-
-                })(
-                  <Input placeholder={'请输入提示语'} maxLength="30" autoComplete="off"/>,
-                )}
+                })(<Input placeholder={'请输入提示语'} maxLength="30" autoComplete="off" />)}
               </FormItem>
               <FormItem label="难易度" {...formItemLayout} colon={false}>
                 {getFieldDecorator('level', {
                   initialValue: itemId != '' && itemDetails.level ? itemDetails.level : 1,
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择难易度',
+                    },
+                  ],
                 })(
-                  <Select placeholder={1} getPopupContainer={() => document.getElementById('level')}>
-                    <Option value={1} key={1}>简单</Option>
-                    <Option value={2} key={2}>普通</Option>
-                    <Option value={3} key={3}>困难</Option>
-                  </Select>,
+                  <Select
+                    placeholder={1}
+                    getPopupContainer={() => document.getElementById('level')}
+                  >
+                    <Option value={1} key={1}>
+                      简单
+                    </Option>
+                    <Option value={2} key={2}>
+                      普通
+                    </Option>
+                    <Option value={3} key={3}>
+                      困难
+                    </Option>
+                  </Select>
                 )}
               </FormItem>
               <FormItem label="多媒体状态" {...formItemLayout} colon={false}>
                 {getFieldDecorator('multiMediaState', {
-                  initialValue: itemId != '' && itemDetails.multiMediaState ? itemDetails.multiMediaState : 2,
+                  initialValue:
+                    itemId != '' && itemDetails.multiMediaState ? itemDetails.multiMediaState : 2,
                 })(
                   <RadioGroup>
-                    <Radio value={1} key={1}>开启</Radio>
-                    <Radio value={2} key={2}>关闭</Radio>
+                    <Radio value={1} key={1}>
+                      开启
+                    </Radio>
+                    <Radio value={2} key={2}>
+                      关闭
+                    </Radio>
                   </RadioGroup>
                 )}
               </FormItem>
@@ -188,52 +202,99 @@ console.log(arr)
                 {getFieldDecorator('type', {
                   initialValue: itemId != '' && itemDetails.type ? itemDetails.type : 1,
                 })(
-                  <Select placeholder={1} getPopupContainer={() => document.getElementById('type')}
-                          onChange={this.selectKnow}>
-                    <Option value={1} key={1}>随机出题</Option>
-                    <Option value={2} key={2}>知识点出题</Option>
-                    <Option value={3} key={3}>自定义题目</Option>
-                  </Select>,
+                  <Select
+                    placeholder={1}
+                    getPopupContainer={() => document.getElementById('type')}
+                    onChange={this.selectKnow}
+                  >
+                    <Option value={1} key={1}>
+                      随机出题
+                    </Option>
+                    <Option value={2} key={2}>
+                      知识点出题
+                    </Option>
+                    <Option value={3} key={3}>
+                      自定义题目
+                    </Option>
+                  </Select>
                 )}
               </FormItem>
 
-              {getFieldValue('type') == 2 ?
-
-                <FormItem label={"知识点"} {...formItemLayout} colon={false} className={styles.answer}>
+              {getFieldValue('type') == 2 ? (
+                <FormItem
+                  label={'知识点'}
+                  {...formItemLayout}
+                  colon={false}
+                  className={styles.answer}
+                >
                   {getFieldDecorator('questionTopicId', {
-                    initialValue: itemId != '' && itemDetails.questionTopicId != undefined ? itemDetails.questionTopicId : schoolQuestionTopicDataAll && schoolQuestionTopicDataAll[0] ? schoolQuestionTopicDataAll[0].id : '',
-                    rules: [{
-                      required: true,
-                      message: `请选择知识点`
-                    }]
-                  })(
-                    <Select placeholder={'请选择知识点'}>
-                      {schoolQuestionTopicObj}
-                    </Select>
-                  )}
-                </FormItem> : null}
+                    initialValue:
+                      itemId != '' && itemDetails.questionTopicId != undefined
+                        ? itemDetails.questionTopicId
+                        : schoolQuestionTopicDataAll && schoolQuestionTopicDataAll[0]
+                        ? schoolQuestionTopicDataAll[0].id
+                        : '',
+                    rules: [
+                      {
+                        required: true,
+                        message: `请选择知识点`,
+                      },
+                    ],
+                  })(<Select placeholder={'请选择知识点'}>{schoolQuestionTopicObj}</Select>)}
+                </FormItem>
+              ) : null}
 
-              {getFieldValue('type') == 3 ?
+              {/*{getFieldValue('type') == 3 ?*/}
+              {/*<FormItem label={'题目'} {...formItemLayout} colon={false}>*/}
+              {/*{getFieldDecorator('schoolQuestionBankId', {*/}
+              {/*initialValue: itemId != '' && items? getBank(items) : {*/}
+              {/*key: schoolQuestionBankDataAll && schoolQuestionBankDataAll[0] && schoolQuestionBankDataAll[0].content,*/}
+              {/*value: schoolQuestionBankDataAll && schoolQuestionBankDataAll[0] && schoolQuestionBankDataAll[0].id*/}
+              {/*},*/}
+              {/*rules: [{*/}
+              {/*required: true,*/}
+              {/*message: `请选择题目`*/}
+              {/*}]*/}
+              {/*})(*/}
+              {/*<TreeSelect {...gegionsTreeProps}/>*/}
+              {/*)}*/}
+
+              {/*</FormItem>*/}
+              {/*: null}*/}
+              {getFieldValue('type') == 3 ? (
                 <FormItem label={'题目'} {...formItemLayout} colon={false}>
                   {getFieldDecorator('schoolQuestionBankId', {
-                    initialValue: itemId != '' && items? getBank(items) : {
-                      key: schoolQuestionBankDataAll && schoolQuestionBankDataAll[0] && schoolQuestionBankDataAll[0].content,
-                      value: schoolQuestionBankDataAll && schoolQuestionBankDataAll[0] && schoolQuestionBankDataAll[0].id
-                    },
-                    rules: [{
-                      required: true,
-                      message: `请选择题目`
-                    }]
+                    initialValue:
+                      itemId != '' && itemDetails.questionTopicId != undefined
+                        ? itemDetails.questionTopicId
+                        : schoolQuestionTopicDataAll && schoolQuestionTopicDataAll[0]
+                        ? schoolQuestionTopicDataAll[0].id
+                        : '',
+                    rules: [
+                      {
+                        required: true,
+                        message: `请选择题目`,
+                      },
+                    ],
                   })(
-                    <TreeSelect {...gegionsTreeProps}/>
+                    <Button type="primary" onClick={this.selectQuestions}>
+                      选择题目
+                    </Button>
                   )}
-
                 </FormItem>
-                : null}
-              
-              <span style={{width: '100%', display: 'block', textAlign: 'center'}}>
-                <Button type="primary" htmlType="submit" style={{marginRight: '20px', padding: '0 50px'}}>保存</Button>
-                <Button htmlType="submit" onClick={this.handleGoBack} style={{padding: '0 50px'}}>取消</Button>
+              ) : null}
+
+              <span style={{ width: '100%', display: 'block', textAlign: 'center' }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginRight: '20px', padding: '0 50px' }}
+                >
+                  保存
+                </Button>
+                <Button htmlType="submit" onClick={this.handleGoBack} style={{ padding: '0 50px' }}>
+                  取消
+                </Button>
               </span>
             </Form>
           </div>
@@ -243,11 +304,7 @@ console.log(arr)
   }
 
   render() {
-    return (
-      <div>
-        {this.renderForm()}
-      </div>
-    );
+    return <div>{this.renderForm()}</div>;
   }
 }
 

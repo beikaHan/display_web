@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,13 +20,13 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import VideoManageTable from '../../components/TeachingManage/VideoManageTable.js';
-import Inputval from "../../components/QueryConditionItem/Inputval.js";
-import BtnSearch from "../../components/QueryConditionItem/BtnSearch.js";
-import DateAndTime from "../../components/QueryConditionItem/DateAndTime.js";
+import Inputval from '../../components/QueryConditionItem/Inputval.js';
+import BtnSearch from '../../components/QueryConditionItem/BtnSearch.js';
+import DateAndTime from '../../components/QueryConditionItem/DateAndTime.js';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import {getCookie} from '../../utils';
+import { getCookie } from '../../utils';
 import url from '../../utils/ipconfig';
 import styles from './Manage.less';
 import moment from 'moment';
@@ -35,9 +35,12 @@ import DropDown from '../../components/QueryConditionItem/DropDown';
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 function getBase64Img(img, callback) {
   const reader = new FileReader();
@@ -91,35 +94,34 @@ export default class VideoManage extends Component {
     uploading: false,
     fileList: [],
     thumbnailResourceId: '',
-    resourceId: ''
+    resourceId: '',
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
     dispatch({
       type: 'teachingManage/getClassifyAll',
-
     });
     dispatch({
       type: 'teachingManage/getSchoolMaterialList',
       payload: {
         ...pagination,
         ...formValues,
-        type: 1
+        type: 1,
       },
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
       page: pagination.current,
       rows: pagination.pageSize,
-      type: 1
+      type: 1,
     };
     this.setState({
       pagination: {
@@ -133,17 +135,17 @@ export default class VideoManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["titleS", "classifyIdS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['titleS', 'classifyIdS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
         ...pagination,
         page: 1,
-        type: 1
+        type: 1,
       };
       this.setState({
         formValues: values,
@@ -160,7 +162,7 @@ export default class VideoManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -174,23 +176,25 @@ export default class VideoManage extends Component {
         type: 'teachingManage/getSchoolMaterialItem',
         payload: {
           id: item.id,
-          type: 1
+          type: 1,
         },
-        callback: (items) => {
-          let fileList = [{
-            uid: items.resourceId,
-            name: items.thumbnailUrl.substring(items.thumbnailUrl.lastIndexOf("/")+1),
-            status: 'done',
-          }]
+        callback: items => {
+          let fileList = [
+            {
+              uid: items.resourceId,
+              name: items.thumbnailUrl.substring(items.thumbnailUrl.lastIndexOf('/') + 1),
+              status: 'done',
+            },
+          ];
           this.setState({
-            fileList: [...fileList]
+            fileList: [...fileList],
           });
-        }
+        },
       });
     } else {
       title = '新增';
       this.setState({
-        fileList: []
+        fileList: [],
       });
     }
     this.setState({
@@ -211,43 +215,60 @@ export default class VideoManage extends Component {
       thumbnailResourceId: '',
       resourceId: '',
       imageUrl: '',
-      fileList:[]
+      fileList: [],
     });
     this.props.dispatch({
       type: 'teachingManage/saveCP',
       payload: {
-        videoItem: {}
+        videoItem: {},
       },
     });
   };
   add = () => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues, thumbnailResourceId, resourceId} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const {
+      addModalItem,
+      addModalType,
+      pagination,
+      formValues,
+      thumbnailResourceId,
+      resourceId,
+    } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
 
       if (addModalType === 'edit') {
-        if ((resourceId == undefined || resourceId == '') && (addModalItem.resourceId == undefined || addModalItem.resourceId == '')) {
+        if (
+          (resourceId == undefined || resourceId == '') &&
+          (addModalItem.resourceId == undefined || addModalItem.resourceId == '')
+        ) {
           notification.error({
             message: '请上传视频',
           });
-          return
+          return;
         }
-        if ((thumbnailResourceId == undefined || thumbnailResourceId == '') && (addModalItem.thumbnailResourceId == undefined || addModalItem.thumbnailResourceId == '')) {
+        if (
+          (thumbnailResourceId == undefined || thumbnailResourceId == '') &&
+          (addModalItem.thumbnailResourceId == undefined || addModalItem.thumbnailResourceId == '')
+        ) {
           notification.error({
             message: '请上传缩略图',
           });
-          return
+          return;
         }
         values = {
           ...fieldsValue,
           id: addModalItem.id,
           adminUserId: addModalItem.adminUserId,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : addModalItem.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : addModalItem.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : addModalItem.resourceId,
-          type: 1
+          type: 1,
         };
         delete values.titleS;
         delete values.classifyIdS;
@@ -255,11 +276,11 @@ export default class VideoManage extends Component {
         dispatch({
           type: 'teachingManage/uptSchoolMaterialData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
-              type: 1
+              type: 1,
             },
           },
           callback: () => {
@@ -271,19 +292,22 @@ export default class VideoManage extends Component {
           notification.error({
             message: '请上传视频',
           });
-          return
+          return;
         }
         if (thumbnailResourceId == undefined || thumbnailResourceId == '') {
           notification.error({
             message: '请上传缩略图',
           });
-          return
+          return;
         }
         values = {
           ...fieldsValue,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : fieldsValue.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : fieldsValue.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : fieldsValue.resourceId,
-          type: 1
+          type: 1,
         };
         delete values.titleS;
         delete values.classifyIdS;
@@ -291,11 +315,11 @@ export default class VideoManage extends Component {
         dispatch({
           type: 'teachingManage/addSchoolMaterialData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
-              type: 1
+              type: 1,
             },
           },
           callback: () => {
@@ -305,10 +329,10 @@ export default class VideoManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -322,21 +346,18 @@ export default class VideoManage extends Component {
             searchVal: {
               ...formValues,
               ...pagination,
-              type: 1
+              type: 1,
             },
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
 
-
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -354,7 +375,7 @@ export default class VideoManage extends Component {
                 searchVal: {
                   ...formValues,
                   ...pagination,
-                  type: 1
+                  type: 1,
                 },
               },
               callback: () => {
@@ -376,17 +397,17 @@ export default class VideoManage extends Component {
     }
   };
   handleRemove = () => {
-    let addModalItem = this.state.addModalItem
+    let addModalItem = this.state.addModalItem;
     if (addModalItem) {
-      addModalItem.resourceId = ''
+      addModalItem.resourceId = '';
       this.setState({
-        addModalItem: addModalItem
-      })
+        addModalItem: addModalItem,
+      });
     }
     this.setState({
       uploading: false,
       resourceId: '',
-    })
+    });
   };
   // vadioValidator = (rule, value, callback) => {
   //    if (value.file&&value.file.status=='done') {
@@ -399,16 +420,16 @@ export default class VideoManage extends Component {
   //    }
   //    callback('resourceId is required');
   // }
-  handleChange = (info) => {
-    if (info.fileList.length>1) {
-      info.fileList.splice(0,info.fileList.length-1)
+  handleChange = info => {
+    if (info.fileList.length > 1) {
+      info.fileList.splice(0, info.fileList.length - 1);
     }
     this.setState({ fileList: [...info.fileList] });
     if (!this.state.uploading) {
       this.setState({
         // btnDiabled: true,
-        uploading: true
-      })
+        uploading: true,
+      });
     }
     if (info.file.status === 'uploading') {
       return;
@@ -417,27 +438,29 @@ export default class VideoManage extends Component {
       // info.fileList.splice(-1)
       this.setState({
         uploading: false,
-        resourceId: info.file.response.resource.id
-      })
+        resourceId: info.file.response.resource.id,
+      });
     }
-  }
-  handleChangeImg = (info) => {
+  };
+  handleChangeImg = info => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
+      console.log(info.file.response);
       // Get this url from response in real world.
-      getBase64Img(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: false,
-        thumbnailResourceId: info.file.response.resource.id
-      }));
+      getBase64Img(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+          thumbnailResourceId: info.file.response.resource.id,
+        })
+      );
     }
-  }
-  handleTabChange = (key) => {
-    const {dispatch} = this.props;
+  };
+  handleTabChange = key => {
+    const { dispatch } = this.props;
     switch (key) {
       case 'classifiedManage':
         dispatch(routerRedux.push('/teachingManage/classified-manage'));
@@ -460,39 +483,59 @@ export default class VideoManage extends Component {
   };
 
   renderForm() {
-    const {teachingManage: {classifyAllData}} = this.props;
+    const {
+      teachingManage: { classifyAllData },
+    } = this.props;
     let recourseObj = [];
-    classifyAllData && classifyAllData.map((el) => {
-      recourseObj.push(
-        <Option value={el.id} key={el.id}>{el.title}</Option>
-      )
-    })
+    classifyAllData &&
+      classifyAllData.map(el => {
+        recourseObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.title}
+          </Option>
+        );
+      });
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'titleS'} con={'标题'} innerCon={'请输入标题'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <DropDown dispatch={this.props} size={{lg: 12, xl: 8, xxl: 6}} dataInx={'classifyIdS'} con={'分类搜索'}
-                  innerCon={'全部'}
-                  optObj={recourseObj}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'titleS'}
+          con={'标题'}
+          innerCon={'请输入标题'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <DropDown
+          dispatch={this.props}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+          dataInx={'classifyIdS'}
+          con={'分类搜索'}
+          innerCon={'全部'}
+          optObj={recourseObj}
+        />
 
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {teachingManage: {loading: ruleLoading, videoData, videoItem, classifyAllData}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, imageUrl, fileList, resourceId} = this.state;
+    const {
+      teachingManage: { loading: ruleLoading, videoData, videoItem, classifyAllData },
+      form: { getFieldDecorator },
+    } = this.props;
+    const { addVisible, addModalTitle, addModalType, imageUrl, fileList, resourceId } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     const menu = (
@@ -501,24 +544,23 @@ export default class VideoManage extends Component {
       </Menu>
     );
     let classifyObj = [];
-    classifyAllData && classifyAllData.map((el) => {
-      classifyObj.push(
-        <Option value={el.id} key={el.id}>{el.title}</Option>
-      )
-    })
+    classifyAllData &&
+      classifyAllData.map(el => {
+        classifyObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.title}
+          </Option>
+        );
+      });
     let tabList = [
-      {key: 'classifiedManage', tab: '分类管理'},
-      {key: 'videoManage', tab: '视频管理'},
-      {key: 'picManage', tab: '图片管理'},
-      {key: 'audioManage', tab: '音频管理'},
-      {key: 'documentManage', tab: '文档管理'},
+      { key: 'classifiedManage', tab: '分类管理' },
+      { key: 'videoManage', tab: '视频管理' },
+      { key: 'picManage', tab: '图片管理' },
+      { key: 'audioManage', tab: '音频管理' },
+      { key: 'documentManage', tab: '文档管理' },
     ];
     return (
-      <PageHeaderLayout
-        tabList={tabList}
-        activeIndex={1}
-        onTabChange={this.handleTabChange}
-      >
+      <PageHeaderLayout tabList={tabList} activeIndex={1} onTabChange={this.handleTabChange}>
         <Card bordered={false}>
           <div className={styles.classManageList}>
             <div className={styles.classManageListForm}>
@@ -526,12 +568,12 @@ export default class VideoManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -549,38 +591,34 @@ export default class VideoManage extends Component {
           </div>
         </Card>
 
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
             <FormItem label="视频标题" {...formItemLayout}>
               {getFieldDecorator('title', {
-                  initialValue: addModalType === 'edit' && videoItem ? videoItem.title : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && videoItem ? videoItem.title : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入视频标题',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入视频标题'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入视频标题'} maxLength={100} />)}
             </FormItem>
             <FormItem label="简介" {...formItemLayout}>
               {getFieldDecorator('content', {
-                  initialValue: addModalType === 'edit' && videoItem ? videoItem.content : '',
-                },
-              )(
-                <Input placeholder={'请输入简介'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && videoItem ? videoItem.content : '',
+              })(<Input placeholder={'请输入简介'} maxLength={100} />)}
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
-                  initialValue: addModalType === 'edit' && videoItem ? videoItem.status : 1,
-                },
-              )(
+                initialValue: addModalType === 'edit' && videoItem ? videoItem.status : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
@@ -589,24 +627,34 @@ export default class VideoManage extends Component {
             </FormItem>
             <FormItem label="分类" {...formItemLayout}>
               {getFieldDecorator('classifyId', {
-                  initialValue: addModalType === 'edit' && videoItem && videoItem.classifyId ? videoItem.classifyId : classifyAllData && classifyAllData[0] ? classifyAllData[0].id : '',
-                },
-              )(
-                <Select placeholder={'请选择分类'}>
-                  {classifyObj}
-                </Select>
-              )}
+                initialValue:
+                  addModalType === 'edit' && videoItem && videoItem.classifyId
+                    ? videoItem.classifyId
+                    : classifyAllData && classifyAllData[0]
+                    ? classifyAllData[0].id
+                    : '',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择分类',
+                  },
+                ],
+              })(<Select placeholder={'请选择分类'}>{classifyObj}</Select>)}
             </FormItem>
             <FormItem label="视频上传" {...formItemLayout}>
               {getFieldDecorator('resourceId', {
-                  initialValue: addModalType === 'edit' && videoItem && videoItem.resourceId ? videoItem.resourceId : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' && videoItem && videoItem.resourceId
+                    ? videoItem.resourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '请上传视频',
                     // validator: this.vadioValidator.bind(this)
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   showUploadList={true}
@@ -615,55 +663,70 @@ export default class VideoManage extends Component {
                   listType={`text`}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   // disabled={this.state.uploading}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUpload}
                   onChange={this.handleChange}
-                  >
+                >
                   <Button>
                     <Icon
-                    // this.state.uploading
-                      type={ false? 'loading' : 'upload'}/> {resourceId ? '已有资源' : addModalType === 'edit' && videoItem.resourceUrl ? '已有资源' : 'Upload'}
+                      // this.state.uploading
+                      type={false ? 'loading' : 'upload'}
+                    />{' '}
+                    {resourceId
+                      ? '已有资源'
+                      : addModalType === 'edit' && videoItem.resourceUrl
+                      ? '已有资源'
+                      : 'Upload'}
                   </Button>
-                </Upload>,
+                </Upload>
               )}
             </FormItem>
             <FormItem label="视频要求" {...formItemLayout}>
-            <div>不得超过200MB</div>
+              <div>不得超过200MB</div>
             </FormItem>
             <FormItem label="缩略图" {...formItemLayout}>
               {getFieldDecorator('thumbnailResourceId', {
-                  initialValue: addModalType === 'edit' && videoItem && videoItem.thumbnailResourceId ? videoItem.thumbnailResourceId : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' && videoItem && videoItem.thumbnailResourceId
+                    ? videoItem.thumbnailResourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '请上传缩略图',
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUploadImg}
-                  onChange={this.handleChangeImg}>
-                  {imageUrl ? <img src={imageUrl}
-                                   alt="avatar"/> : addModalType === 'edit' && videoItem && videoItem.thumbnailUrl ?
-                    <img src={videoItem.thumbnailUrl} alt="avatar"/> : <div>
-                      <Icon type={this.state.loading ? 'loading' : 'plus'}/>
+                  onChange={this.handleChangeImg}
+                >
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="avatar" />
+                  ) : addModalType === 'edit' && videoItem && videoItem.thumbnailUrl ? (
+                    <img src={videoItem.thumbnailUrl} alt="avatar" />
+                  ) : (
+                    <div>
+                      <Icon type={this.state.loading ? 'loading' : 'plus'} />
                       <div className="ant-upload-text">Upload</div>
-                    </div>}
-                </Upload>,
+                    </div>
+                  )}
+                </Upload>
               )}
             </FormItem>
             <FormItem label="图片要求" {...formItemLayout}>
-            <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
+              <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
             </FormItem>
           </Form>
         </Modal>

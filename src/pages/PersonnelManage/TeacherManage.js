@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,7 +20,7 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from 'dva/router';
+import { routerRedux } from 'dva/router';
 import TeacherManageTable from '../../components/PersonnelManage/TeacherManageTable.js';
 import TeacherExhibitorsTable from '../../components/PersonnelManage/TeacherExhibitorsTable.js';
 import Inputval from '../../components/QueryConditionItem/Inputval.js';
@@ -31,7 +31,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './Manage.less';
 import moment from 'moment';
 import ManageTable from '../../components/Manage/ManageTable';
-import {getCookie} from '../../utils';
+import { getCookie } from '../../utils';
 import url from '../../utils/ipconfig';
 
 const FormItem = Form.Item;
@@ -55,7 +55,6 @@ function beforeUpload(file) {
   // return isJPG && isLt2M;
   return isJPG;
 }
-
 
 @connect(state => ({
   classManage: state.classManage,
@@ -82,12 +81,12 @@ export default class TeacherManage extends Component {
     importVisible: false,
     uploading: false,
     reportFiles: [],
-    detailTitle: ''
+    detailTitle: '',
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
 
     dispatch({
       type: 'classManage/getTeacherList',
@@ -98,9 +97,9 @@ export default class TeacherManage extends Component {
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
@@ -119,12 +118,12 @@ export default class TeacherManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    console.log(pagination)
-    form.validateFields(["nameS", "staffNoS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    console.log(pagination);
+    form.validateFields(['nameS', 'staffNoS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
@@ -146,7 +145,7 @@ export default class TeacherManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -183,9 +182,10 @@ export default class TeacherManage extends Component {
     });
   };
   add = () => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const { addModalItem, addModalType, pagination, formValues } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
@@ -200,7 +200,7 @@ export default class TeacherManage extends Component {
         dispatch({
           type: 'classManage/uptTeacherData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
@@ -219,7 +219,7 @@ export default class TeacherManage extends Component {
         dispatch({
           type: 'classManage/addTeacherData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
@@ -232,10 +232,10 @@ export default class TeacherManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -253,14 +253,12 @@ export default class TeacherManage extends Component {
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -312,8 +310,8 @@ export default class TeacherManage extends Component {
     });
   };
 
-  handleTabChange = (key) => {
-    const {dispatch} = this.props;
+  handleTabChange = key => {
+    const { dispatch } = this.props;
     switch (key) {
       case 'teacherManage':
         dispatch(routerRedux.push('/personnelManage/teacher-manage'));
@@ -329,12 +327,11 @@ export default class TeacherManage extends Component {
     }
   };
 
-  handleExhibitors = (item) => {
+  handleExhibitors = item => {
     // TODO:参展详情日期搜索
     // e.preventDefault();
-    debugger
-    const {dispatch, form} = this.props;
-    const {paginationExhibitors} = this.state;
+    const { dispatch, form } = this.props;
+    const { paginationExhibitors } = this.state;
     const that = this;
     const values = {
       ...paginationExhibitors,
@@ -360,20 +357,18 @@ export default class TeacherManage extends Component {
           detailTitle: item.name,
           exhibitorsVisible: true,
         });
-      }
+      },
     });
-
-
   };
-  handleChange = (info) => {
+  handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
+      console.log(info.file.response);
       this.setState({
-        previewImageResourceId: info.file.response.resource.id
+        previewImageResourceId: info.file.response.resource.id,
       });
       // // Get this url from response in real world.
       // getBase64(info.file.originFileObj, imageUrl => this.setState({
@@ -382,7 +377,7 @@ export default class TeacherManage extends Component {
       //   previewImageResourceId: info.file.response.resource.id
       // }));
     }
-  }
+  };
 
   exhibitorsHide = () => {
     this.setState({
@@ -391,14 +386,14 @@ export default class TeacherManage extends Component {
     });
   };
 
-  handleExhibitorsTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValuesExhibitors} = this.state;
+  handleExhibitorsTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValuesExhibitors } = this.state;
 
     const params = {
+      ...formValuesExhibitors,
       page: pagination.current,
       rows: pagination.pageSize,
-      ...formValuesExhibitors,
     };
     this.setState({
       paginationExhibitors: {
@@ -412,12 +407,12 @@ export default class TeacherManage extends Component {
     });
   };
 
-  handleExhibitorsSearch = (e) => {
+  handleExhibitorsSearch = e => {
     // debugger
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {paginationExhibitors, formValuesExhibitors} = this.state;
-    form.validateFields(["beginDate", "endDate"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { paginationExhibitors, formValuesExhibitors } = this.state;
+    form.validateFields(['beginDate', 'endDate'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...formValuesExhibitors,
@@ -461,16 +456,15 @@ export default class TeacherManage extends Component {
 
   handleReportChange = (info, fileType) => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
       notification.success({
-        message: `${file.name} file uploaded successfully`
+        message: `${file.name} file uploaded successfully`,
       });
     }
   };
-
 
   handleCancelImport = () => {
     this.setState({
@@ -483,50 +477,81 @@ export default class TeacherManage extends Component {
       name: 'file',
       headers: {
         // 'Content-Type': 'multipart/form-data',
-        'JSESSIONID': getCookie() ? getCookie() : null
+        JSESSIONID: getCookie() ? getCookie() : null,
       },
       action: `${url.baseURL}/schoolTeacher/import`,
       fileList: [],
-      onChange: (info) => this.handleReportChange(info),
+      onChange: info => this.handleReportChange(info),
     };
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'staffNoS'} con={'员工号'} innerCon={'请输入员工号'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <Inputval dispatch={this.props} dataInx={'nameS'} con={'名称'} innerCon={'请输入名称'} maxLength={'15'}
-                  size={{lg: 12, xl: 7, xxl: 6}}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'staffNoS'}
+          con={'员工号'}
+          innerCon={'请输入员工号'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <Inputval
+          dispatch={this.props}
+          dataInx={'nameS'}
+          con={'名称'}
+          innerCon={'请输入名称'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 7, xxl: 6 }}
+        />
 
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 1, xl: 1, xxl: 1}}/>
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 1, xl: 1, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={this.downModal}><Icon
-            type="download"/>模板下载</Button>
-          <span style={{display: 'inline-block'}}><Upload {...reportUploadProps}><Button type="primary"
-                                                                                         style={{marginLeft: '10px'}}><Icon
-            type="select"/>导入</Button></Upload></span>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
-
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={this.downModal}>
+            <Icon type="download" />
+            模板下载
+          </Button>
+          <span style={{ display: 'inline-block' }}>
+            <Upload {...reportUploadProps}>
+              <Button type="primary" style={{ marginLeft: '10px' }}>
+                <Icon type="select" />
+                导入
+              </Button>
+            </Upload>
+          </span>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {classManage: {loading: ruleLoading, teacherData, teacherItem, teacherDetailData}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, exhibitorsVisible, importVisible, reportFiles, uploading, detailTitle} = this.state;
+    const {
+      classManage: { loading: ruleLoading, teacherData, teacherItem, teacherDetailData },
+      form: { getFieldDecorator },
+    } = this.props;
+    const {
+      addVisible,
+      addModalTitle,
+      addModalType,
+      exhibitorsVisible,
+      importVisible,
+      reportFiles,
+      uploading,
+      detailTitle,
+    } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
 
     let tabList = [
-      {key: 'teacherManage', tab: '教师管理'},
-      {key: 'studentManage', tab: '学生管理'},
-      {key: 'classManage', tab: '班级管理'},
+      { key: 'teacherManage', tab: '教师管理' },
+      { key: 'studentManage', tab: '学生管理' },
+      { key: 'classManage', tab: '班级管理' },
     ];
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -537,19 +562,15 @@ export default class TeacherManage extends Component {
       name: 'file',
       headers: {
         // 'Content-Type': 'multipart/form-data',
-        'JSESSIONID': getCookie() ? getCookie() : null
+        JSESSIONID: getCookie() ? getCookie() : null,
       },
       action: `${url.baseURL}/resource/upload`,
-      onChange: (info) => this.handleReportChange(info),
-      onRemove: (info) => this.handleReportRemove(info),
+      onChange: info => this.handleReportChange(info),
+      onRemove: info => this.handleReportRemove(info),
       fileList: reportFiles,
     };
     return (
-      <PageHeaderLayout
-        tabList={tabList}
-        activeIndex={0}
-        onTabChange={this.handleTabChange}
-      >
+      <PageHeaderLayout tabList={tabList} activeIndex={0} onTabChange={this.handleTabChange}>
         <Card bordered={false}>
           <div className={styles.classManageList}>
             <div className={styles.classManageListForm}>
@@ -557,12 +578,12 @@ export default class TeacherManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -581,67 +602,71 @@ export default class TeacherManage extends Component {
           </div>
         </Card>
 
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
             <FormItem label="员工号" {...formItemLayout}>
               {getFieldDecorator('staffNo', {
-                  initialValue: addModalType === 'edit' && teacherItem ? teacherItem.staffNo : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && teacherItem ? teacherItem.staffNo : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入员工号',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入员工号'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入员工号'} maxLength={100} />)}
             </FormItem>
             <FormItem label="姓名" {...formItemLayout}>
               {getFieldDecorator('name', {
-                  initialValue: addModalType === 'edit' && teacherItem ? teacherItem.name : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && teacherItem ? teacherItem.name : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入姓名',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入姓名'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入姓名'} maxLength={100} />)}
             </FormItem>
             <FormItem label="密码" {...formItemLayout}>
               {getFieldDecorator('password', {
-                  initialValue: addModalType === 'edit' && teacherItem ? teacherItem.password : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && teacherItem ? teacherItem.password : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入密码',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入密码'} type='password' maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入密码'} type="password" maxLength={100} />)}
             </FormItem>
           </Form>
         </Modal>
 
-        <Modal title={detailTitle + ': 参展详情'}
-               visible={exhibitorsVisible}
-               onOk={this.exhibitorsHide}
-               onCancel={() => this.exhibitorsHide()}
-               className={styles.detailModal}
-               footer={[
-                 <Button key="submit" type="primary" onClick={this.exhibitorsHide}
-                         style={{margin: 'auto', padding: '0 50px'}}>确认</Button>,
-               ]}
+        <Modal
+          title={detailTitle + ': 参展详情'}
+          visible={exhibitorsVisible}
+          onOk={this.exhibitorsHide}
+          onCancel={() => this.exhibitorsHide()}
+          className={styles.detailModal}
+          footer={[
+            <Button
+              key="submit"
+              type="primary"
+              onClick={this.exhibitorsHide}
+              style={{ margin: 'auto', padding: '0 50px' }}
+            >
+              确认
+            </Button>,
+          ]}
         >
           <div className={styles.classManageListForm}>
             <Form onSubmit={this.handleExhibitorsSearch} layout="inline">
-              <Date dispatch={this.props} con={'日期期间'} size={{lg: 20, xl: 20, xxl: 20}}/>
-              <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 1, xl: 1, xxl: 1}}/>
-
+              <Date dispatch={this.props} con={'日期期间'} size={{ lg: 20, xl: 20, xxl: 20 }} />
+              <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 1, xl: 1, xxl: 1 }} />
             </Form>
           </div>
           <TeacherExhibitorsTable
@@ -662,27 +687,35 @@ export default class TeacherManage extends Component {
           onCancel={this.handleCancelImport}
           destroyOnClose={true}
           footer={[
-            <Button key="submit"
-                    type="primary"
-                    className="upload-demo-start"
-                    onClick={this.handleChange}
-                    loading={uploading}
-                    style={{padding: '0 50px'}}>
+            <Button
+              key="submit"
+              type="primary"
+              className="upload-demo-start"
+              onClick={this.handleChange}
+              loading={uploading}
+              style={{ padding: '0 50px' }}
+            >
               {uploading ? '上传中' : '确认'}
             </Button>,
-            <Button key="back" onClick={this.handleCancelImport} style={{padding: '0 50px'}}>取消</Button>,
+            <Button key="back" onClick={this.handleCancelImport} style={{ padding: '0 50px' }}>
+              取消
+            </Button>,
           ]}
         >
           <div>
             <div>
-              <span style={{display: 'inline-block'}}>
+              <span style={{ display: 'inline-block' }}>
                 <Upload {...reportUploadProps}>
                   <Button>
-                    <Icon type="upload"/> Upload
+                    <Icon type="upload" /> Upload
                   </Button>
                 </Upload>
               </span>
-              {reportFiles.length === 0 ? <span style={{marginLeft: '20px'}}>未选择任何文件</span> : ''}
+              {reportFiles.length === 0 ? (
+                <span style={{ marginLeft: '20px' }}>未选择任何文件</span>
+              ) : (
+                ''
+              )}
             </div>
           </div>
         </Modal>

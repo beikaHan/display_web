@@ -1,11 +1,11 @@
-import {routerRedux, redirect} from 'dva/router';
-import {stringify} from 'qs';
-import {fakeAccountLogin, getFakeCaptcha, getSchool, getChangeSchool} from '@/services/api';
-import {setAuthority} from '@/utils/authority';
-import {getPageQuery} from '@/utils/utils';
-import {reloadAuthorized} from '@/utils/Authorized';
-import {validResult} from '@/utils/utilsValid';
-import {notification} from 'antd';
+import { routerRedux, redirect } from 'dva/router';
+import { stringify } from 'qs';
+import { fakeAccountLogin, getFakeCaptcha, getSchool, getChangeSchool } from '@/services/api';
+import { setAuthority } from '@/utils/authority';
+import { getPageQuery } from '@/utils/utils';
+import { reloadAuthorized } from '@/utils/Authorized';
+import { validResult } from '@/utils/utilsValid';
+import { notification } from 'antd';
 import {
   setLoginIn,
   setLoginOut,
@@ -16,7 +16,7 @@ import {
   setUserName,
   getUserName,
   setschoolId,
-  setSchoolTitle
+  setSchoolTitle,
 } from '@/utils/index';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   },
 
   effects: {
-    * login({payload}, {call, put}) {
+    *login({ payload }, { call, put }) {
       setLoginOut();
       const response = yield call(fakeAccountLogin, payload);
       if (response.data.status == 0) {
@@ -50,8 +50,8 @@ export default {
           if (response.data.user.roles[i].name === 'ROLE_admin') {
             if (result.data.list && result.data.list.length > 0) {
               let school = {
-                "schoolId": result.data.list[0].id
-              }
+                schoolId: result.data.list[0].id,
+              };
               const changeSchool = yield call(getChangeSchool, school);
               validResult(changeSchool);
               setschoolId(changeSchool.data.school.id);
@@ -65,13 +65,11 @@ export default {
         removeRole();
         yield put(routerRedux.push('/personnelManage'));
       } else {
-        notification.success({
+        notification.error({
           message: '用户名或密码错误',
         });
         yield put(routerRedux.replace(redirect || '/'));
-        
       }
-
 
       // Login successfully
       // if (response.status === 'ok') {
@@ -95,18 +93,18 @@ export default {
       // }
     },
 
-    * getCaptcha({payload}, {call}) {
+    *getCaptcha({ payload }, { call }) {
       yield call(getFakeCaptcha, payload);
     },
 
-    * logout(_, {put}) {
+    *logout(_, { put }) {
       setLoginOut();
       yield put({
         type: 'changeLoginStatus',
         payload: {
           status: false,
           currentAuthority: 'guest',
-          user: {userName: ''}
+          user: { userName: '' },
         },
       });
       reloadAuthorized();
@@ -116,13 +114,13 @@ export default {
           search: stringify({
             redirect: window.location.href,
           }),
-        }),
+        })
       );
     },
   },
 
   reducers: {
-    changeLoginStatus(state, {payload}) {
+    changeLoginStatus(state, { payload }) {
       console.log(payload);
       setAuthority(payload.user.userName);
       return {

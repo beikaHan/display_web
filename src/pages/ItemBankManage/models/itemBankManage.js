@@ -1,22 +1,26 @@
 import moment from 'moment';
-import {notification} from 'antd';
-import {validResult} from "../../../utils/utilsValid";
+import { notification } from 'antd';
+import { validResult } from '../../../utils/utilsValid';
 import {
   getSchoolQuestionTopicAll,
-  addSchoolQuestionTopicData, delSchoolQuestionTopic,
+  addSchoolQuestionTopicData,
+  delSchoolQuestionTopic,
   getSchoolQuestionTopic,
   getSchoolQuestionTopicItem,
   uptSchoolQuestionTopicItem,
   getSchoolQuestionBankAll,
-  addSchoolQuestionBankData, delSchoolQuestionBank,
+  addSchoolQuestionBankData,
+  delSchoolQuestionBank,
   getSchoolQuestionBank,
   getSchoolQuestionBankItem,
   uptSchoolQuestionBankItem,
-  addSchoolCustomTestData, delSchoolCustomTest,
+  addSchoolCustomTestData,
+  delSchoolCustomTest,
   getSchoolCustomTest,
   getSchoolCustomTestItem,
   uptSchoolCustomTestItem,
-  addSchoolCustomTestConfigoData, delSchoolCustomTestConfigo,
+  addSchoolCustomTestConfigoData,
+  delSchoolCustomTestConfigo,
   getSchoolCustomTestConfigo,
   getSchoolCustomTestConfigoItem,
   uptSchoolCustomTestConfigoItem,
@@ -58,11 +62,11 @@ export default {
     schoolQuestionTopicDataAll: [],
     schoolCustomTestQuestions: [],
     schoolQuestionBankDataAll: [],
-    questionBankId: ''
+    questionBankId: '',
   },
 
   subscriptions: {
-    setup({dispatch, history}) {
+    setup({ dispatch, history }) {
       /*dispatch({
         type: 'init',
       })*/
@@ -70,17 +74,17 @@ export default {
   },
 
   effects: {
-    * getSchoolQuestionTopicAll({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionTopicAll({ payload, callback }, { call, select, put }) {
       const result = yield call(getSchoolQuestionTopicAll);
       if (!validResult(result)) {
         return;
       }
       yield put({
         type: 'saveCP',
-        payload: {schoolQuestionTopicDataAll: result.data.list},
+        payload: { schoolQuestionTopicDataAll: result.data.list },
       });
     },
-    * getSchoolQuestionTopicList({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionTopicList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -90,7 +94,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -104,11 +108,11 @@ export default {
       });
     },
 
-    * addSchoolQuestionTopicData({payload, callback}, {call, select, put}) {
+    *addSchoolQuestionTopicData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addSchoolQuestionTopicData, params);
       if (!validResult(result)) {
         return;
@@ -125,10 +129,10 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolQuestionTopicItem({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionTopicItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getSchoolQuestionTopicItem, params);
       if (!validResult(result)) {
         return;
@@ -137,15 +141,15 @@ export default {
       yield put({
         type: 'saveCP',
         payload: {
-          schoolQuestionTopicItem: result.data.schoolQuestionTopic
+          schoolQuestionTopicItem: result.data.schoolQuestionTopic,
         },
       });
     },
 
-    * uptSchoolQuestionTopicData({payload, callback}, {call, select, put}) {
+    *uptSchoolQuestionTopicData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptSchoolQuestionTopicItem, params);
       if (!validResult(result)) {
         return;
@@ -156,7 +160,7 @@ export default {
       yield put({
         type: 'saveCP',
         payload: {
-          schoolQuestionTopicItem: result.data.school
+          schoolQuestionTopicItem: result.data.school,
         },
       });
       yield put({
@@ -168,10 +172,10 @@ export default {
       if (callback) callback();
     },
 
-    * delSchoolQuestionTopicData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolQuestionTopicData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchoolQuestionTopic, params);
       if (!validResult(result)) {
@@ -188,17 +192,17 @@ export default {
       });
       if (callback) callback();
     },
-    * getSchoolQuestionBankAll({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionBankAll({ payload, callback }, { call, select, put }) {
       const result = yield call(getSchoolQuestionBankAll);
       if (!validResult(result)) {
         return;
       }
       yield put({
         type: 'saveCP',
-        payload: {schoolQuestionBankDataAll: result.data.list},
+        payload: { schoolQuestionBankDataAll: result.data.list },
       });
     },
-    * getSchoolQuestionBankList({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionBankList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -210,7 +214,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -222,13 +226,14 @@ export default {
         type: 'saveSchoolQuestionBankData',
         payload: data,
       });
+      if (callback) callback();
     },
 
-    * addSchoolQuestionBankData({payload, callback}, {call, select, put}) {
+    *addSchoolQuestionBankData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addSchoolQuestionBankData, params);
       if (!validResult(result)) {
         return;
@@ -245,31 +250,31 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolQuestionBankItem({payload, callback}, {call, select, put}) {
+    *getSchoolQuestionBankItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getSchoolQuestionBankItem, params);
       if (!validResult(result)) {
         return;
       }
       for (let i = 0; i < result.data.items.length; i++) {
-        result.data.items[i].key = i
+        result.data.items[i].key = i;
       }
       yield put({
         type: 'saveCP',
         payload: {
           schoolQuestionBankItem: result.data.schoolQuestionBank,
-          items: result.data.items
+          items: result.data.items,
         },
       });
-      if (callback) callback(result.data.items)
+      if (callback) callback(result.data.items);
     },
 
-    * uptSchoolQuestionBankData({payload, callback}, {call, select, put}) {
+    *uptSchoolQuestionBankData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptSchoolQuestionBankItem, params);
       if (!validResult(result)) {
         return;
@@ -286,10 +291,10 @@ export default {
       if (callback) callback();
     },
 
-    * delSchoolQuestionBankData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolQuestionBankData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchoolQuestionBank, params);
       if (!validResult(result)) {
@@ -307,18 +312,18 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolCustomTestList({payload, callback}, {call, select, put}) {
+    *getSchoolCustomTestList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
         title: payload && payload.titleS ? payload.titleS : '',
-        level: payload && payload.levelS ? payload.levelS : '',
+        level: payload && payload.cusLevelS ? payload.cusLevelS : '',
       };
       const result = yield call(getSchoolCustomTest, params);
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -332,11 +337,11 @@ export default {
       });
     },
 
-    * addSchoolCustomTestData({payload, callback}, {call, select, put}) {
+    *addSchoolCustomTestData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addSchoolCustomTestData, params);
       if (!validResult(result)) {
         return;
@@ -353,31 +358,31 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolCustomTestItem({payload, callback}, {call, select, put}) {
+    *getSchoolCustomTestItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getSchoolCustomTestItem, params);
       if (!validResult(result)) {
         return;
       }
       for (let i = 0; i < result.data.questions.length; i++) {
-        result.data.questions[i].key = i
+        result.data.questions[i].key = i;
       }
       yield put({
         type: 'saveCP',
         payload: {
           schoolCustomTestItem: result.data.schoolCustomTest,
-          schoolCustomTestQuestions: result.data.questions
+          schoolCustomTestQuestions: result.data.questions,
         },
       });
-      if (callback) callback(result.data.questions)
+      if (callback) callback(result.data.questions);
     },
 
-    * uptSchoolCustomTestData({payload, callback}, {call, select, put}) {
+    *uptSchoolCustomTestData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptSchoolCustomTestItem, params);
       if (!validResult(result)) {
         return;
@@ -394,10 +399,10 @@ export default {
       if (callback) callback();
     },
 
-    * delSchoolCustomTestData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolCustomTestData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchoolCustomTest, params);
       if (!validResult(result)) {
@@ -415,7 +420,7 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolCustomTestConfigoList({payload, callback}, {call, select, put}) {
+    *getSchoolCustomTestConfigoList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -425,7 +430,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -439,11 +444,11 @@ export default {
       });
     },
 
-    * addSchoolCustomTestConfigoData({payload, callback}, {call, select, put}) {
+    *addSchoolCustomTestConfigoData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addSchoolCustomTestConfigoData, params);
       if (!validResult(result)) {
         return;
@@ -460,19 +465,27 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolCustomTestConfigoItem({payload, callback}, {call, select, put}) {
+    *getSchoolCustomTestConfigoItem({ payload, callback }, { call, select, put }) {
       const result = yield call(getSchoolCustomTestConfigoItem, {});
       if (!validResult(result)) {
         return;
       }
-      let pointData = [{x: '困难', y: result.data.schoolCustomTestConfig.topicHardPercent}, {
-        x: '正常',
-        y: result.data.schoolCustomTestConfig.topicNormalPercent
-      }, {x: '简单', y: result.data.schoolCustomTestConfig.topicEasyPercent}]
-      let rendomData = [{x: '困难', y: result.data.schoolCustomTestConfig.randomHardPercent}, {
-        x: '正常',
-        y: result.data.schoolCustomTestConfig.randomNormalPercent
-      }, {x: '简单', y: result.data.schoolCustomTestConfig.randomEasyPercent}]
+      let pointData = [
+        { x: '困难', y: result.data.schoolCustomTestConfig.topicHardPercent },
+        {
+          x: '正常',
+          y: result.data.schoolCustomTestConfig.topicNormalPercent,
+        },
+        { x: '简单', y: result.data.schoolCustomTestConfig.topicEasyPercent },
+      ];
+      let rendomData = [
+        { x: '困难', y: result.data.schoolCustomTestConfig.randomHardPercent },
+        {
+          x: '正常',
+          y: result.data.schoolCustomTestConfig.randomNormalPercent,
+        },
+        { x: '简单', y: result.data.schoolCustomTestConfig.randomEasyPercent },
+      ];
       yield put({
         type: 'saveCP',
         payload: {
@@ -482,15 +495,14 @@ export default {
           topicTestSize: result.data.schoolCustomTestConfig.topicTestSize,
         },
       });
-      if(callback)callback(result.data.schoolCustomTestConfig)
+      if (callback) callback(result.data.schoolCustomTestConfig);
     },
 
-    * uptSchoolCustomTestConfigoData({payload, callback}, {call, select, put}) {
-
+    *uptSchoolCustomTestConfigoData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
-      console.log(params)
+      };
+      console.log(params);
       const result = yield call(uptSchoolCustomTestConfigoItem, params);
       if (!validResult(result)) {
         return;
@@ -504,10 +516,10 @@ export default {
       if (callback) callback();
     },
 
-    * delSchoolCustomTestConfigoData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolCustomTestConfigoData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchoolCustomTestConfigo, params);
       if (!validResult(result)) {
@@ -525,9 +537,9 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolCustomGenerateData({payload, callback}, {call, select, put}) {
+    *getSchoolCustomGenerateData({ payload, callback }, { call, select, put }) {
       let params = {
-        type: payload && payload.type ? payload.type : 1
+        type: payload && payload.type ? payload.type : 1,
       };
       const result = yield call(getSchoolCustomGenerateData, params);
       if (!validResult(result)) {
@@ -584,4 +596,4 @@ export default {
       };
     },
   },
-}
+};
