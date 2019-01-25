@@ -152,11 +152,7 @@ class DishEdit extends Component {
                   rules: [{ required: true, message: '请输入标题' }],
                 })(<Input placeholder={'请输入标题'} maxLength="30" autoComplete="off" />)}
               </FormItem>
-              <FormItem label="提示语" {...formItemLayout} colon={false}>
-                {getFieldDecorator('content', {
-                  initialValue: itemId != '' && itemDetails.content ? itemDetails.content : '',
-                })(<Input placeholder={'请输入提示语'} maxLength="30" autoComplete="off" />)}
-              </FormItem>
+
               <FormItem label="难易度" {...formItemLayout} colon={false}>
                 {getFieldDecorator('level', {
                   initialValue: itemId != '' && itemDetails.level ? itemDetails.level : 1,
@@ -198,6 +194,22 @@ class DishEdit extends Component {
                   </RadioGroup>
                 )}
               </FormItem>
+              <FormItem label="注" {...formItemLayout} colon={false}>
+                <div>开启多媒体功能后，任务中推送的题组会要求用户扫码得到题组</div>
+              </FormItem>
+              {getFieldValue('multiMediaState') == 1 ? (
+                <FormItem label="提示语" {...formItemLayout} colon={false}>
+                  {getFieldDecorator('content', {
+                    initialValue: itemId != '' && itemDetails.content ? itemDetails.content : '',
+                  })(
+                    <Input
+                      placeholder={'请到某某某地方，扫某某某二维码'}
+                      maxLength="30"
+                      autoComplete="off"
+                    />
+                  )}
+                </FormItem>
+              ) : null}
               <FormItem label="出题类型" {...formItemLayout} colon={false}>
                 {getFieldDecorator('type', {
                   initialValue: itemId != '' && itemDetails.type ? itemDetails.type : 1,

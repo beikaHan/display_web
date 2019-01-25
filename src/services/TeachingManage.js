@@ -1,4 +1,4 @@
-import request from "../utils/request";
+import request from '../utils/request';
 
 export async function getClassifyAll(params) {
   return request('/schoolMaterialClassify/all', {
@@ -40,6 +40,14 @@ export async function delClassify(params) {
     body: params,
   });
 }
+
+export async function getSchoolMaterialAll(params) {
+  return request('/schoolMaterial/all', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 export async function getSchoolMaterial(params) {
   return request('/schoolMaterial/list', {
     method: 'POST',

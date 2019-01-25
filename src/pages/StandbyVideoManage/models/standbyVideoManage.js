@@ -1,10 +1,14 @@
 import {
-  addStandbyVideoData, delStandbyVideo,
-  getStandbyVideo, getStandbyVideoItem, uptStandbyVideoItem,
+  addStandbyVideoData,
+  delStandbyVideo,
+  getStandbyVideo,
+  getStandbyVideoItem,
+  uptStandbyVideoItem,
 } from '../../../services/StandbyVideoManage';
 import moment from 'moment';
-import {notification} from 'antd';
-import {validResult} from "../../../utils/utilsValid";
+import { notification } from 'antd';
+import { validResult } from '../../../utils/utilsValid';
+import { getSchoolMaterialAll } from '../../../services/TeachingManage';
 
 export default {
   namespace: 'standbyVideoManage',
@@ -16,10 +20,11 @@ export default {
       list: [],
       pagination: {},
     },
+    videoAllData: [],
   },
 
   subscriptions: {
-    setup({dispatch, history}) {
+    setup({ dispatch, history }) {
       /*dispatch({
         type: 'init',
       })*/
@@ -27,7 +32,7 @@ export default {
   },
 
   effects: {
-    * getStandbyVideoList({payload, callback}, {call, select, put}) {
+    *getStandbyVideoList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -37,7 +42,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -51,11 +56,11 @@ export default {
       });
     },
 
-    * addStandbyVideoData({payload, callback}, {call, select, put}) {
+    *addStandbyVideoData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addStandbyVideoData, params);
       if (!validResult(result)) {
         return;
@@ -72,10 +77,10 @@ export default {
       if (callback) callback();
     },
 
-    * getStandbyVideoItem({payload, callback}, {call, select, put}) {
+    *getStandbyVideoItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getStandbyVideoItem, params);
       if (!validResult(result)) {
         return;
@@ -84,16 +89,16 @@ export default {
       yield put({
         type: 'saveCP',
         payload: {
-          standbyVideoItem: result.data.schoolStandbyVideo
+          standbyVideoItem: result.data.schoolStandbyVideo,
         },
       });
       if (callback) callback(result.data.schoolStandbyVideo);
     },
 
-    * uptStandbyVideoData({payload, callback}, {call, select, put}) {
+    *uptStandbyVideoData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptStandbyVideoItem, params);
       if (!validResult(result)) {
         return;
@@ -111,10 +116,10 @@ export default {
       if (callback) callback();
     },
 
-    * delStandbyVideoData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delStandbyVideoData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delStandbyVideo, params);
       if (!validResult(result)) {
@@ -130,6 +135,22 @@ export default {
         },
       });
       if (callback) callback();
+    },
+    *getVideoAll({ payload, callback }, { call, select, put }) {
+      let params = {
+        type: 1,
+      };
+      const result = yield call(getSchoolMaterialAll, params);
+      if (!validResult(result)) {
+        return;
+      }
+
+      yield put({
+        type: 'saveCP',
+        payload: {
+          videoAllData: result.data.list,
+        },
+      });
     },
   },
 
@@ -153,4 +174,4 @@ export default {
       };
     },
   },
-}
+};

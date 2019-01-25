@@ -284,7 +284,7 @@ class DishEdit extends Component {
                       itemDetails.content != undefined &&
                       itemDetails.content.length > 0
                         ? itemDetails.content
-                        : '请输入提示语'
+                        : '请输入题目信息'
                     }
                     className={styles.description}
                   />

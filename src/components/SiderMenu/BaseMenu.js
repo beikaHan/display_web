@@ -36,25 +36,25 @@ export default class BaseMenu extends PureComponent {
    * @memberof SiderMenu
    */
   getNavMenuItems = (menusData, parent) => {
-      // let menus = [];
-      if (!menusData) {
-        return [];
-      }
-      // for(var i=0; i<menusData.length; i++){
-      //   // if(menusData[i].children){
-      //   //   for(var j=0; j<menusData[i].children.length; j++){
-      //   //     if (urlNotInLeft(menusData[i].children[j].path)) {
-      //   //       menusData[i].children[j] = []
-      //   //     }
-      //   //   }
-      //   // }
-      //   if (!urlNotInLeft(menusData[i].path)) {
-      //     menus.push(menusData[i])
-      //   }
-      // }
-      // console.log(menus)
-      // return menus
-      //
+    // let menus = [];
+    if (!menusData) {
+      return [];
+    }
+    // for(var i=0; i<menusData.length; i++){
+    //   // if(menusData[i].children){
+    //   //   for(var j=0; j<menusData[i].children.length; j++){
+    //   //     if (urlNotInLeft(menusData[i].children[j].path)) {
+    //   //       menusData[i].children[j] = []
+    //   //     }
+    //   //   }
+    //   // }
+    //   if (!urlNotInLeft(menusData[i].path)) {
+    //     menus.push(menusData[i])
+    //   }
+    // }
+    // console.log(menus)
+    // return menus
+    //
     return menusData
       .filter(item => item.name && !item.hideInMenu && !urlNotInLeft(item.path))
       .map(item => this.getSubMenuOrItem(item, parent))
@@ -160,6 +160,7 @@ export default class BaseMenu extends PureComponent {
         openKeys,
       };
     }
+    console.log(openKeys);
     const { handleOpenChange, style, menuData } = this.props;
     return (
       <Menu

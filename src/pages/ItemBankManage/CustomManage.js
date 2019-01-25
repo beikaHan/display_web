@@ -535,14 +535,13 @@ export default class VipManage extends Component {
     });
   };
   handleAddCustomSearch = e => {
-    // debugger
     e.preventDefault();
     const { dispatch, form } = this.props;
     const { paginationAddCustom, formValuesAddCustom } = this.state;
     form.validateFields(['contentS', 'levelS', 'questionTypeS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
-        ...formValuesAddCustom,
+        ...fieldsValue,
         ...paginationAddCustom,
         page: 1,
       };
@@ -728,7 +727,7 @@ export default class VipManage extends Component {
             <Button
               key="cancel"
               onClick={() => this.selectQuestionsHide()}
-              style={{ margin: 'auto', padding: '0 50px' }}
+              style={{ marginLeft: '20px', padding: '0 50px' }}
             >
               取消
             </Button>,

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -21,21 +21,24 @@ import {
   notification,
 } from 'antd';
 import StandbyVideoManageTable from '../../components/StandbyVideoManage/StandbyVideoManageTable.js';
-import Inputval from "../../components/QueryConditionItem/Inputval.js";
-import BtnSearch from "../../components/QueryConditionItem/BtnSearch.js";
+import Inputval from '../../components/QueryConditionItem/Inputval.js';
+import BtnSearch from '../../components/QueryConditionItem/BtnSearch.js';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Manage.less';
 import moment from 'moment';
-import {getCookie} from '../../utils';
+import { getCookie } from '../../utils';
 import url from '../../utils/ipconfig';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 function getBase64Img(img, callback) {
   const reader = new FileReader();
@@ -89,13 +92,15 @@ export default class StandbyVideoManage extends Component {
     uploading: false,
     thumbnailResourceId: '',
     resourceId: '',
-    fileList: []
+    fileList: [],
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
-
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
+    dispatch({
+      type: 'standbyVideoManage/getVideoAll',
+    });
     dispatch({
       type: 'standbyVideoManage/getStandbyVideoList',
       payload: {
@@ -105,9 +110,9 @@ export default class StandbyVideoManage extends Component {
     });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
@@ -126,11 +131,11 @@ export default class StandbyVideoManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["titleS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['titleS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
@@ -152,7 +157,7 @@ export default class StandbyVideoManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -168,21 +173,23 @@ export default class StandbyVideoManage extends Component {
         payload: {
           id: item.id,
         },
-        callback: (items) => {
-          let fileList = [{
-            uid: items.videoResourceId,
-            name: items.url.substring(items.url.lastIndexOf("/")+1),
-            status: 'done',
-          }]
+        callback: items => {
+          let fileList = [
+            {
+              uid: items.videoResourceId,
+              name: items.url.substring(items.url.lastIndexOf('/') + 1),
+              status: 'done',
+            },
+          ];
           this.setState({
-            fileList: [...fileList]
+            fileList: [...fileList],
           });
-        }
+        },
       });
     } else {
       title = '新增';
       this.setState({
-        fileList: []
+        fileList: [],
       });
     }
     this.setState({
@@ -202,19 +209,27 @@ export default class StandbyVideoManage extends Component {
       thumbnailResourceId: '',
       resourceId: '',
       imageUrl: '',
-      fileList:[]
+      fileList: [],
     });
     this.props.dispatch({
       type: 'standbyVideoManage/saveCP',
       payload: {
-        standbyVideoItem: {}
+        standbyVideoItem: {},
       },
     });
   };
   add = () => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues, thumbnailResourceId, resourceId} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const {
+      addModalItem,
+      addModalType,
+      pagination,
+      formValues,
+      thumbnailResourceId,
+      resourceId,
+    } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
@@ -223,17 +238,21 @@ export default class StandbyVideoManage extends Component {
           ...fieldsValue,
           id: addModalItem.id,
           adminUserId: addModalItem.adminUserId,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : fieldsValue.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : fieldsValue.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : fieldsValue.resourceId,
         };
         delete values.titleS;
+        delete values.videoId;
         if (values.previewImageUrl) {
           delete values.previewImageUrl;
         }
         dispatch({
           type: 'standbyVideoManage/uptStandbyVideoData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
@@ -246,17 +265,21 @@ export default class StandbyVideoManage extends Component {
       } else {
         values = {
           ...fieldsValue,
-          thumbnailResourceId: thumbnailResourceId && thumbnailResourceId != '' ? thumbnailResourceId : fieldsValue.thumbnailResourceId,
+          thumbnailResourceId:
+            thumbnailResourceId && thumbnailResourceId != ''
+              ? thumbnailResourceId
+              : fieldsValue.thumbnailResourceId,
           resourceId: resourceId && resourceId != '' ? resourceId : fieldsValue.resourceId,
         };
         delete values.titleS;
+        delete values.videoId;
         if (values.previewImageUrl) {
           delete values.previewImageUrl;
         }
         dispatch({
           type: 'standbyVideoManage/addStandbyVideoData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
               page: 1,
@@ -270,10 +293,10 @@ export default class StandbyVideoManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     confirm({
       title: '',
       content: '是否确认删除？',
@@ -291,16 +314,13 @@ export default class StandbyVideoManage extends Component {
           },
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
-
   };
 
-
-  handleMenuClick = (e) => {
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     const that = this;
     if (!selectedRows || selectedRows.length <= 0) return;
     switch (e.key) {
@@ -338,10 +358,10 @@ export default class StandbyVideoManage extends Component {
         break;
     }
   };
-  handleInfo = (item) => {
+  handleInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     dispatch({
       type: 'manage/uptSchoolData',
       payload: {
@@ -358,79 +378,125 @@ export default class StandbyVideoManage extends Component {
         });
       },
     });
-  }
-  
+  };
 
   handleRemove = () => {
-    let addModalItem = this.state.addModalItem
+    let addModalItem = this.state.addModalItem;
     if (addModalItem) {
-      addModalItem.resourceId = ''
+      addModalItem.resourceId = '';
       this.setState({
-        addModalItem: addModalItem
-      })
+        addModalItem: addModalItem,
+      });
     }
     this.setState({
       uploading: false,
       resourceId: '',
-    })
+    });
   };
 
-  handleChange = (info) => {
-    if (info.fileList.length>1) {
-      info.fileList.splice(0,info.fileList.length-1)
+  handleChange = info => {
+    if (info.fileList.length > 1) {
+      info.fileList.splice(0, info.fileList.length - 1);
     }
     this.setState({ fileList: [...info.fileList] });
     if (info.file.status === 'uploading') {
       this.setState({
-        uploading: true
-      })
+        uploading: true,
+      });
       return;
     }
     if (info.file.status === 'done') {
       this.setState({
         uploading: false,
-        resourceId: info.file.response.resource.id
-      })
+        resourceId: info.file.response.resource.id,
+      });
     }
-  }
-  handleChangeImg = (info) => {
+  };
+  handleChangeImg = info => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
+      console.log(info.file.response);
       // Get this url from response in real world.
-      getBase64Img(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: false,
-        thumbnailResourceId: info.file.response.resource.id
-      }));
+      getBase64Img(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+          thumbnailResourceId: info.file.response.resource.id,
+        })
+      );
     }
-  }
+  };
+  selectVideo = e => {
+    const temp = e.split(',');
+    let standbyVideoItem = {
+      title: temp[1],
+      content: temp[2],
+      status: temp[3],
+      videoResourceId: temp[4],
+      thumbnailResourceId: temp[5],
+      thumbnailUrl: temp[6],
+      url: temp[7],
+    };
+    this.props.dispatch({
+      type: 'standbyVideoManage/saveCP',
+      payload: {
+        standbyVideoItem: standbyVideoItem,
+      },
+    });
+    this.setState({
+      tempFlag: true,
+    });
+  };
 
   renderForm() {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'titleS'} con={'视频名称'} innerCon={'请输入视频名称'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'titleS'}
+          con={'视频名称'}
+          innerCon={'请输入视频名称'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow()}><Icon
-            type="plus-circle"/>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.addShow()}>
+            <Icon type="plus-circle" />
+            新增
+          </Button>
         </Col>
       </Form>
     );
   }
 
   render() {
-    const {standbyVideoManage: {loading: ruleLoading, standbyVideoData, standbyVideoItem}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, imageUrl, resourceId, fileList} = this.state;
+    const {
+      standbyVideoManage: {
+        loading: ruleLoading,
+        standbyVideoData,
+        standbyVideoItem,
+        videoAllData,
+      },
+      form: { getFieldDecorator },
+    } = this.props;
+    const {
+      addVisible,
+      addModalTitle,
+      addModalType,
+      imageUrl,
+      resourceId,
+      fileList,
+      tempFlag,
+    } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
     const menu = (
@@ -438,6 +504,36 @@ export default class StandbyVideoManage extends Component {
         <Menu.Item key="del">批量删除</Menu.Item>
       </Menu>
     );
+
+    let videoObj = [];
+    videoAllData &&
+      videoAllData.map(el => {
+        videoObj.push(
+          <Option
+            value={
+              el.id +
+              ',' +
+              el.title +
+              ',' +
+              el.content +
+              ',' +
+              el.status +
+              ',' +
+              el.resourceId +
+              ',' +
+              el.thumbnailResourceId +
+              ',' +
+              el.thumbnailUrl +
+              ',' +
+              el.url
+            }
+            key={el.id}
+          >
+            {el.title}
+          </Option>
+        );
+      });
+    console.log(standbyVideoItem);
     return (
       <PageHeaderLayout title="待机视频管理">
         <Card bordered={false}>
@@ -447,12 +543,12 @@ export default class StandbyVideoManage extends Component {
               <Col lg={12} xl={8} xxl={6} className={styles.pointerSpan}>
                 <span className={styles.tableListOperator}>
                   <span>
-                        <Dropdown overlay={menu}>
-                          <Button style={{width: '150px'}}>
-                            批量操作 <Icon type="down"/>
-                          </Button>
-                        </Dropdown>
-                      </span>
+                    <Dropdown overlay={menu}>
+                      <Button style={{ width: '150px' }}>
+                        批量操作 <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  </span>
                 </span>
               </Col>
             </div>
@@ -470,38 +566,59 @@ export default class StandbyVideoManage extends Component {
           </div>
         </Card>
 
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
+            <FormItem label="选择视频" {...formItemLayout}>
+              {getFieldDecorator('videoId', {
+                initialValue: '',
+              })(
+                <Select
+                  placeholder={'请从视频管理中选择'}
+                  style={{ width: '100%' }}
+                  onChange={this.selectVideo}
+                >
+                  {videoObj}
+                </Select>
+              )}
+            </FormItem>
             <FormItem label="视频标题" {...formItemLayout}>
               {getFieldDecorator('title', {
-                  initialValue: addModalType === 'edit' && standbyVideoItem ? standbyVideoItem.title : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' || (tempFlag && standbyVideoItem)
+                    ? standbyVideoItem.title
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入名称',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入待机视频标题'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入待机视频标题'} maxLength={100} />)}
             </FormItem>
             <FormItem label="简介" {...formItemLayout}>
               {getFieldDecorator('content', {
-                  initialValue: addModalType === 'edit' && standbyVideoItem ? standbyVideoItem.content : '',
-                },
-              )(
-                <Input placeholder={'请输入简介'} maxLength={100}/>,
-              )}
+                initialValue:
+                  addModalType === 'edit' || (tempFlag && standbyVideoItem)
+                    ? standbyVideoItem.content
+                    : '',
+              })(<Input placeholder={'请输入简介'} maxLength={100} />)}
+            </FormItem>
+            <FormItem label="注" {...formItemLayout} colon={false}>
+              <div>管理平台展示用</div>
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
-                  initialValue: addModalType === 'edit' && standbyVideoItem ? standbyVideoItem.status : 1,
-                },
-              )(
+                initialValue:
+                  addModalType === 'edit' || (tempFlag && standbyVideoItem)
+                    ? parseInt(standbyVideoItem.status)
+                    : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
@@ -511,13 +628,18 @@ export default class StandbyVideoManage extends Component {
 
             <FormItem label="视频上传" {...formItemLayout}>
               {getFieldDecorator('resourceId', {
-                  initialValue: addModalType === 'edit' && standbyVideoItem && standbyVideoItem.url ? standbyVideoItem.url : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' ||
+                  (tempFlag && standbyVideoItem && standbyVideoItem.videoResourceId)
+                    ? standbyVideoItem.videoResourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '视频上传',
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   // listType="picture-card"
@@ -527,56 +649,67 @@ export default class StandbyVideoManage extends Component {
                   listType={`text`}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUpload}
-                  onChange={this.handleChange}>
+                  onChange={this.handleChange}
+                >
                   <Button>
-                    <Icon
-                      type={false ? 'loading' : 'upload'}/> {resourceId ? '已有资源' :standbyVideoItem.url ? '已有资源' : 'Upload'}
+                    <Icon type={false ? 'loading' : 'upload'} />{' '}
+                    {resourceId ? '已有资源' : standbyVideoItem.url ? '已有资源' : 'Upload'}
                   </Button>
                 </Upload>
               )}
             </FormItem>
             <FormItem label="视频要求" {...formItemLayout}>
-            <div>不得超过200MB</div>
+              <div>不得超过200MB</div>
             </FormItem>
             <FormItem label="缩略图" {...formItemLayout}>
               {getFieldDecorator('thumbnailResourceId', {
-                  initialValue: addModalType === 'edit' && standbyVideoItem && standbyVideoItem.thumbnailResourceId ? standbyVideoItem.thumbnailResourceId : '',
-                  rules: [{
+                initialValue:
+                  addModalType === 'edit' ||
+                  (tempFlag && standbyVideoItem && standbyVideoItem.thumbnailResourceId)
+                    ? standbyVideoItem.thumbnailResourceId
+                    : '',
+                rules: [
+                  {
                     required: true,
                     message: '缩略图',
-                  }],
-                },
-              )(
+                  },
+                ],
+              })(
                 <Upload
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUploadImg}
-                  onChange={this.handleChangeImg}>
-                  {imageUrl ? <img src={imageUrl}
-                                   alt="avatar"/> : addModalType === 'edit' && standbyVideoItem && standbyVideoItem.thumbnailUrl ?
-                    <img src={standbyVideoItem.thumbnailUrl} alt="avatar"/> : <div>
-                      <Icon type={this.state.loading ? 'loading' : 'plus'}/>
+                  onChange={this.handleChangeImg}
+                >
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="avatar" />
+                  ) : addModalType === 'edit' ||
+                    (tempFlag && standbyVideoItem && standbyVideoItem.thumbnailUrl) ? (
+                    <img src={standbyVideoItem.thumbnailUrl} alt="avatar" />
+                  ) : (
+                    <div>
+                      <Icon type={this.state.loading ? 'loading' : 'plus'} />
                       <div className="ant-upload-text">Upload</div>
-                    </div>}
-                </Upload>,
+                    </div>
+                  )}
+                </Upload>
               )}
             </FormItem>
             <FormItem label="图片要求" {...formItemLayout}>
-            <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
+              <div>图片仅支持jpg或png格式，且大小不超过2MB，比例为16:9</div>
             </FormItem>
           </Form>
         </Modal>
-
       </PageHeaderLayout>
     );
   }

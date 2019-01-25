@@ -569,6 +569,9 @@ export default class DocumentManage extends Component {
                 initialValue: addModalType === 'edit' && documentItem ? documentItem.content : '',
               })(<Input placeholder={'请输入简介'} maxLength={100} />)}
             </FormItem>
+            <FormItem label="注" {...formItemLayout} colon={false}>
+              <div>管理平台展示用</div>
+            </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
                 initialValue: addModalType === 'edit' && documentItem ? documentItem.status : 1,

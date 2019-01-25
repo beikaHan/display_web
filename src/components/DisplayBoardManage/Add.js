@@ -185,14 +185,16 @@ class DishEdit extends Component {
                       itemDetails.content != undefined &&
                       itemDetails.content.length > 0
                         ? itemDetails.content
-                        : '请输入提示语'
+                        : '请输入描述'
                     }
                     className={styles.description}
                     onChange={this.onChangeUserName}
                   />
                 )}
               </FormItem>
-
+              <FormItem label="注" {...formItemLayout} colon={false}>
+                <div>管理平台展示用</div>
+              </FormItem>
               <FormItem label="分类" {...formItemLayout} colon={false}>
                 {getFieldDecorator('classifyId', {
                   initialValue:
@@ -236,12 +238,15 @@ class DishEdit extends Component {
                       itemDetails.alertContent != undefined &&
                       itemDetails.alertContent.length > 0
                         ? itemDetails.alertContent
-                        : '请输入提示语'
+                        : '请到某某某地方，扫某某某二维码'
                     }
                     className={styles.description}
                     onChange={this.onChangeUserName}
                   />
                 )}
+              </FormItem>
+              <FormItem label="注" {...formItemLayout} colon={false}>
+                <div>任务要求扫码的时候，展示这句提示语</div>
               </FormItem>
               {items &&
                 items.map((el, idx) => {

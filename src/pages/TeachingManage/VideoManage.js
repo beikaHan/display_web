@@ -615,6 +615,9 @@ export default class VideoManage extends Component {
                 initialValue: addModalType === 'edit' && videoItem ? videoItem.content : '',
               })(<Input placeholder={'请输入简介'} maxLength={100} />)}
             </FormItem>
+            <FormItem label="注" {...formItemLayout} colon={false}>
+              <div>管理平台展示用</div>
+            </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
                 initialValue: addModalType === 'edit' && videoItem ? videoItem.status : 1,
