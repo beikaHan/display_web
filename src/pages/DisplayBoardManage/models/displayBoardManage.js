@@ -1,19 +1,20 @@
-import {
-  memberList, updateMemberList
-} from '../../../services/PersonnelManage';
+import { memberList, updateMemberList } from '../../../services/PersonnelManage';
 import moment from 'moment';
-import {notification} from 'antd';
-import {validResult} from "../../../utils/utilsValid";
+import { notification } from 'antd';
+import { validResult } from '../../../utils/utilsValid';
 import {
   getClassifyDisplayAll,
-  addClassifyDisplayData, delClassifyDisplay,
+  addClassifyDisplayData,
+  delClassifyDisplay,
   getClassifyDisplay,
   getClassifyDisplayItem,
   uptClassifyDisplayItem,
-  addContentDisplayData, delContentDisplay,
+  addContentDisplayData,
+  delContentDisplay,
   getContentDisplay,
   getContentDisplayItem,
   uptContentDisplayItem,
+  downBatchQrcode,
 } from '../../../services/DisplayBoardManage';
 
 export default {
@@ -32,11 +33,11 @@ export default {
       pagination: {},
     },
     classifyDisplayAll: [],
-    items: []
+    items: [],
   },
 
   subscriptions: {
-    setup({dispatch, history}) {
+    setup({ dispatch, history }) {
       /*dispatch({
         type: 'init',
       })*/
@@ -44,23 +45,27 @@ export default {
   },
 
   effects: {
-    *getClassifyDisplayAll({payload,callback}, {call, select, put}) {
+    *getClassifyDisplayAll({ payload, callback }, { call, select, put }) {
       const result = yield call(getClassifyDisplayAll);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
       yield put({
         type: 'saveCP',
-        payload: {classifyDisplayAll : result.data.list},
+        payload: { classifyDisplayAll: result.data.list },
       });
     },
-    * getClassifyDisplayList({payload,callback}, {call, select, put}) {
+    *getClassifyDisplayList({ payload, callback }, { call, select, put }) {
       let params = {
-        rows: payload && payload.rows ?payload.rows : 10,
-        page: payload && payload.page ?payload.page : 1,
-        title: payload && payload.titleS ?payload.titleS : '',
+        rows: payload && payload.rows ? payload.rows : 10,
+        page: payload && payload.page ? payload.page : 1,
+        title: payload && payload.titleS ? payload.titleS : '',
       };
       const result = yield call(getClassifyDisplay, params);
-      if(!validResult(result)){return;}
-      let data = {}
+      if (!validResult(result)) {
+        return;
+      }
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -74,16 +79,18 @@ export default {
       });
     },
 
-    * addClassifyDisplayData({ payload, callback }, { call, select, put }) {
+    *addClassifyDisplayData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addClassifyDisplayData, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
       notification.success({
-    message: '操作成功',
-  });
+        message: '操作成功',
+      });
       yield put({
         type: 'getClassifyDisplayList',
         payload: {
@@ -93,31 +100,35 @@ export default {
       if (callback) callback();
     },
 
-    * getClassifyDisplayItem({ payload, callback }, { call, select, put }) {
+    *getClassifyDisplayItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getClassifyDisplayItem, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
 
       yield put({
         type: 'saveCP',
-        payload:{
-          classifyDisplayItem: result.data.schoolDisplayBoardClassifyView
+        payload: {
+          classifyDisplayItem: result.data.schoolDisplayBoardClassifyView,
         },
       });
     },
 
-    * uptClassifyDisplayData({ payload, callback }, { call, select, put }) {
+    *uptClassifyDisplayData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptClassifyDisplayItem, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
 
-     notification.success({
-    message: '操作成功',
-  });
+      notification.success({
+        message: '操作成功',
+      });
       yield put({
         type: 'getClassifyDisplayList',
         payload: {
@@ -127,16 +138,18 @@ export default {
       if (callback) callback();
     },
 
-    * delClassifyDisplayData({payload,callback}, {call, select, put}) {
-      console.log(payload)
+    *delClassifyDisplayData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ?payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delClassifyDisplay, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
       notification.success({
-    message: '操作成功',
-  });
+        message: '操作成功',
+      });
       yield put({
         type: 'getClassifyDisplayList',
         payload: {
@@ -146,16 +159,18 @@ export default {
       if (callback) callback();
     },
 
-    * getContentDisplayList({payload,callback}, {call, select, put}) {
+    *getContentDisplayList({ payload, callback }, { call, select, put }) {
       let params = {
-        rows: payload && payload.rows ?payload.rows : 10,
-        page: payload && payload.page ?payload.page : 1,
-        title: payload && payload.titleS ?payload.titleS : '',
-        classifyId: payload && payload.classifyIdS ?payload.classifyIdS : '',
+        rows: payload && payload.rows ? payload.rows : 10,
+        page: payload && payload.page ? payload.page : 1,
+        title: payload && payload.titleS ? payload.titleS : '',
+        classifyId: payload && payload.classifyIdS ? payload.classifyIdS : '',
       };
       const result = yield call(getContentDisplay, params);
-      if(!validResult(result)){return;}
-      let data = {}
+      if (!validResult(result)) {
+        return;
+      }
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -170,16 +185,18 @@ export default {
       });
     },
 
-    * addContentDisplayData({ payload, callback }, { call, select, put }) {
+    *addContentDisplayData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
-      console.log(params)
+      console.log(params);
       const result = yield call(addContentDisplayData, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
       notification.success({
-    message: '操作成功',
-  });
+        message: '操作成功',
+      });
       yield put({
         type: 'getContentDisplayList',
         payload: {
@@ -189,36 +206,40 @@ export default {
       if (callback) callback();
     },
 
-    * getContentDisplayItem({ payload, callback }, { call, select, put }) {
+    *getContentDisplayItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getContentDisplayItem, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
 
-      for(let i=0;i<result.data.items.length;i++){
-        result.data.items[i].key = [i]
+      for (let i = 0; i < result.data.items.length; i++) {
+        result.data.items[i].key = [i];
       }
       yield put({
         type: 'saveCP',
-        payload:{
+        payload: {
           contentDisplayItem: result.data.schoolDisplayBoardView,
-          items: result.data.items
+          items: result.data.items,
         },
       });
-      if(callback)callback(result.data.items)
+      if (callback) callback(result.data.items);
     },
 
-    * uptContentDisplayData({ payload, callback }, { call, select, put }) {
+    *uptContentDisplayData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptContentDisplayItem, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
 
       notification.success({
-    message: '操作成功',
-  });
+        message: '操作成功',
+      });
       yield put({
         type: 'getContentDisplayList',
         payload: {
@@ -228,16 +249,18 @@ export default {
       if (callback) callback();
     },
 
-    * delContentDisplayData({payload,callback}, {call, select, put}) {
-      console.log(payload)
+    *delContentDisplayData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ?payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delContentDisplay, params);
-      if(!validResult(result)){return;}
+      if (!validResult(result)) {
+        return;
+      }
       notification.success({
-    message: '操作成功',
-  });
+        message: '操作成功',
+      });
       yield put({
         type: 'getContentDisplayList',
         payload: {
@@ -275,4 +298,4 @@ export default {
       };
     },
   },
-}
+};

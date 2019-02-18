@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import {
   Table,
   Card,
@@ -20,7 +20,7 @@ import {
   Upload,
   notification,
 } from 'antd';
-import {routerRedux} from 'dva/router';
+import { routerRedux } from 'dva/router';
 import QRCode from 'qrcode.react';
 import ManageTable from '../../components/Manage/ManageTable.js';
 import Inputval from '../../components/QueryConditionItem/Inputval.js';
@@ -30,15 +30,18 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Manage.less';
 import moment from 'moment';
-import {getSchoolInfo, getCookie} from '../../utils';
+import { getSchoolInfo, getCookie } from '../../utils';
 import url from '../../utils/ipconfig';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
-const {TextArea} = Input;
-const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
+const { Option } = Select;
+const { TextArea } = Input;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -76,12 +79,12 @@ export default class VipManage extends Component {
     selectedRows: [],
     loading: false,
     imageUrl: '',
-    previewImageResourceId: ''
+    previewImageResourceId: '',
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    const {pagination, formValues} = this.state;
+    const { dispatch } = this.props;
+    const { pagination, formValues } = this.state;
 
     dispatch({
       type: 'manage/getSchoolList',
@@ -90,11 +93,14 @@ export default class VipManage extends Component {
         ...formValues,
       },
     });
+    dispatch({
+      type: 'manage/themeData',
+    });
   }
 
-  handleStandardTableChange = (pagination) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+  handleStandardTableChange = pagination => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const params = {
       ...formValues,
@@ -113,11 +119,11 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
-    const {dispatch, form} = this.props;
-    const {pagination} = this.state;
-    form.validateFields(["titleS"], (err, fieldsValue) => {
+    const { dispatch, form } = this.props;
+    const { pagination } = this.state;
+    form.validateFields(['titleS'], (err, fieldsValue) => {
       // if (err) return;
       const values = {
         ...fieldsValue,
@@ -129,7 +135,7 @@ export default class VipManage extends Component {
         pagination: {
           ...pagination,
           page: 1,
-        }
+        },
       });
 
       dispatch({
@@ -139,7 +145,7 @@ export default class VipManage extends Component {
     });
   };
 
-  handleSelectRows = (rows) => {
+  handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
@@ -173,13 +179,20 @@ export default class VipManage extends Component {
       addModalTitle: '',
       addModalType: '',
       addModalItem: '',
-      imageUrl: ''
+      imageUrl: '',
     });
   };
   add = (type, item) => {
-    const {dispatch, form} = this.props;
-    const {addModalItem, addModalType, pagination, formValues, previewImageResourceId} = this.state;
-    let title = '', that = this;
+    const { dispatch, form } = this.props;
+    const {
+      addModalItem,
+      addModalType,
+      pagination,
+      formValues,
+      previewImageResourceId,
+    } = this.state;
+    let title = '',
+      that = this;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let values = {};
@@ -188,13 +201,13 @@ export default class VipManage extends Component {
           ...fieldsValue,
           id: addModalItem.id,
           adminUserId: addModalItem.adminUserId,
-          previewImageResourceId: previewImageResourceId
+          previewImageResourceId: previewImageResourceId,
         };
         delete values.titleS;
         dispatch({
           type: 'manage/uptSchoolData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...formValues,
               ...pagination,
@@ -207,16 +220,16 @@ export default class VipManage extends Component {
       } else {
         values = {
           ...fieldsValue,
-          previewImageResourceId: previewImageResourceId
+          previewImageResourceId: previewImageResourceId,
         };
         delete values.titleS;
         dispatch({
           type: 'manage/addSchoolData',
           payload: {
-            values: {...values},
+            values: { ...values },
             searchVal: {
               ...pagination,
-              page: 1
+              page: 1,
             },
           },
           callback: () => {
@@ -226,10 +239,10 @@ export default class VipManage extends Component {
       }
     });
   };
-  delInfo = (item) => {
+  delInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, selectedRows, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, selectedRows, pagination } = this.state;
     console.log(selectedRows);
     confirm({
       title: '',
@@ -259,13 +272,12 @@ export default class VipManage extends Component {
         });
       },
     });
-
   };
 
-  handleInfo = (item) => {
+  handleInfo = item => {
     const that = this;
-    const {dispatch} = this.props;
-    const {formValues, pagination} = this.state;
+    const { dispatch } = this.props;
+    const { formValues, pagination } = this.state;
     dispatch({
       type: 'manage/uptSchoolData',
       payload: {
@@ -284,70 +296,99 @@ export default class VipManage extends Component {
         });
       },
     });
-  }
-  handleChange = (info) => {
+  };
+  handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
+      console.log(info.file.response);
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: false,
-        previewImageResourceId: info.file.response.resource.id
-      }));
+      getBase64(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+          previewImageResourceId: info.file.response.resource.id,
+        })
+      );
     }
-  }
-  downloadQrcode = (item) => {
+  };
+  downloadQrcode = item => {
     window.open(`${url.baseURL}/schoolBase/qrcode/${item.id}`);
-    // location.href = 'http://39.96.18.156:80/schoolBase/qrcode/0'
-// this.props.dispatch({
-//       type: 'manage/downloadQrcode',
-// payload:{
-//   schoolId: item.id
-// }
-//     })
-  }
+  };
+
+  changeTheme = e => {
+    const { formValues, pagination } = this.state;
+    this.props.dispatch({
+      type: 'manage/uptSchoolTheme',
+      payload: {
+        themeId: e.target.value,
+        searchVal: {
+          ...formValues,
+          ...pagination,
+        },
+      },
+    });
+  };
 
   renderForm() {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Inputval dispatch={this.props} dataInx={'titleS'} con={'学校名称'} innerCon={'请输入学校名称'} maxLength={'15'}
-                  size={{lg: 12, xl: 8, xxl: 6}}/>
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{lg: 12, xl: 8, xxl: 1}}/>
+        <Inputval
+          dispatch={this.props}
+          dataInx={'titleS'}
+          con={'学校名称'}
+          innerCon={'请输入学校名称'}
+          maxLength={'15'}
+          size={{ lg: 12, xl: 8, xxl: 6 }}
+        />
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
         <Col id={'mediaXl'}>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.addShow(null, null)}><Icon
-            type="plus-circle"/>新增</Button>
-          <Button type="primary" style={{marginLeft: '10px'}} onClick={() => this.delInfo()}><Icon
-            type="plus-circle"/>批量删除</Button>
+          <Button
+            type="primary"
+            style={{ marginLeft: '10px' }}
+            onClick={() => this.addShow(null, null)}
+          >
+            <Icon type="plus-circle" />
+            新增
+          </Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.delInfo()}>
+            <Icon type="plus-circle" />
+            批量删除
+          </Button>
         </Col>
       </Form>
-
     );
   }
 
   render() {
-    const {manage: {loading: ruleLoading, manageData, schoolItem}, form: {getFieldDecorator}} = this.props;
-    const {addVisible, addModalTitle, addModalType, imageUrl} = this.state;
+    const {
+      manage: { loading: ruleLoading, manageData, schoolItem, themeData },
+      form: { getFieldDecorator },
+    } = this.props;
+    const { addVisible, addModalTitle, addModalType, imageUrl } = this.state;
     const formItemLayout = {
-      labelcol: {span: 6},
+      labelcol: { span: 6 },
       wrappercol: {
-        xs: {span: 28, offset: 0},
-        sm: {span: 10, offset: 0},
+        xs: { span: 28, offset: 0 },
+        sm: { span: 10, offset: 0 },
       },
     };
-// console.log(getCookie())
+    let themeObj = [];
+    themeData &&
+      themeData.map(el => {
+        themeObj.push(
+          <Option value={el.id} key={el.id}>
+            {el.themeInfo}
+          </Option>
+        );
+      });
     return (
-      <PageHeaderLayout
-        title='学校管理'
-      >
+      <PageHeaderLayout title="学校管理">
         <Card bordered={false}>
           <div className={styles.classManageList}>
-            <div className={styles.classManageListForm}>
-              {this.renderForm()}
-            </div>
+            <div className={styles.classManageListForm}>{this.renderForm()}</div>
 
             <ManageTable
               loading={ruleLoading}
@@ -363,123 +404,134 @@ export default class VipManage extends Component {
           </div>
         </Card>
 
-        <Modal title={addModalTitle}
-               visible={addVisible}
-               onOk={this.add}
-               onCancel={() => this.addHide()}
-               className={styles.addModal}
+        <Modal
+          title={addModalTitle}
+          visible={addVisible}
+          onOk={this.add}
+          onCancel={() => this.addHide()}
+          className={styles.addModal}
         >
           <Form layout="inline">
             <FormItem label="名称" {...formItemLayout}>
               {getFieldDecorator('title', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.title : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.title : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入名称',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入名称'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入名称'} maxLength={100} />)}
             </FormItem>
             <FormItem label="网址" {...formItemLayout}>
               {getFieldDecorator('websiteUrl', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.websiteUrl : '',
-                },
-              )(
-                <Input placeholder={'请输入网址'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.websiteUrl : '',
+              })(<Input placeholder={'请输入网址'} maxLength={100} />)}
             </FormItem>
             <FormItem label="联系方式" {...formItemLayout}>
               {getFieldDecorator('contact', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.contact : '',
-                },
-              )(
-                <Input placeholder={'请输入联系方式'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.contact : '',
+              })(<Input placeholder={'请输入联系方式'} maxLength={100} />)}
             </FormItem>
             <FormItem label="简介" {...formItemLayout}>
               {getFieldDecorator('content', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.content : '',
-                },
-              )(
-                <Input placeholder={'请输入简介'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.content : '',
+              })(<Input placeholder={'请输入简介'} maxLength={100} />)}
             </FormItem>
             <FormItem label="地址" {...formItemLayout}>
               {getFieldDecorator('address', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.address : '',
-                },
-              )(
-                <Input placeholder={'请输入地址'} maxLength={100}/>,
-              )}
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.address : '',
+              })(<Input placeholder={'请输入地址'} maxLength={100} />)}
             </FormItem>
             <FormItem label="账号" {...formItemLayout}>
               {getFieldDecorator('username', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.username : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.username : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入账号',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入账号'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入账号'} maxLength={100} />)}
             </FormItem>
             <FormItem label="密码" {...formItemLayout}>
               {getFieldDecorator('password', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.password : '',
-                  rules: [{
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.password : '',
+                rules: [
+                  {
                     required: true,
                     message: '请输入密码',
-                  }],
-                },
-              )(
-                <Input placeholder={'请输入密码'} maxLength={100}/>,
-              )}
+                  },
+                ],
+              })(<Input placeholder={'请输入密码'} maxLength={100} />)}
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
-                  initialValue: addModalType === 'edit' && schoolItem ? schoolItem.status : 1,
-                },
-              )(
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.status : 1,
+              })(
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
                 </RadioGroup>
               )}
             </FormItem>
+            {/*<FormItem label="主题" {...formItemLayout}>*/}
+            {/*{getFieldDecorator('themeId', {*/}
+            {/*initialValue: addModalType === 'edit' && schoolItem ? schoolItem.themeId : '',*/}
+            {/*},*/}
+            {/*)(*/}
+            {/*<Select placeholder={'请选择主题'}>*/}
+            {/*{themeObj}*/}
+            {/*</Select>*/}
+            {/*)}*/}
+            {/*</FormItem>*/}
+            <FormItem label="主题" {...formItemLayout}>
+              {getFieldDecorator('themeId', {
+                initialValue: addModalType === 'edit' && schoolItem ? schoolItem.themeId : 1,
+              })(
+                <RadioGroup onChange={this.changeTheme}>
+                  <Radio value={0}>标准</Radio>
+                  <Radio value={1}>川菜风</Radio>
+                </RadioGroup>
+              )}
+            </FormItem>
             <FormItem label="学校图片" {...formItemLayout}>
               {getFieldDecorator('previewImageUrl', {
-                  initialValue: addModalType === 'edit' && schoolItem && schoolItem.previewImageUrl ? schoolItem.previewImageUrl : '',
-                },
-              )(
+                initialValue:
+                  addModalType === 'edit' && schoolItem && schoolItem.previewImageUrl
+                    ? schoolItem.previewImageUrl
+                    : '',
+              })(
                 <Upload
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
                   headers={{
                     // 'Content-Type': 'multipart/form-data',
-                    'JSESSIONID': getCookie() ? getCookie() : null
+                    JSESSIONID: getCookie() ? getCookie() : null,
                   }}
                   action={`${url.baseURL}/resource/upload`}
                   beforeUpload={beforeUpload}
-                  onChange={this.handleChange}>
-                  {imageUrl ? <img src={imageUrl}
-                                   alt="avatar"/> : addModalType === 'edit' && schoolItem && schoolItem.previewImageUrl ?
-                    <img src={schoolItem.previewImageUrl} alt="avatar"/> : <div>
-                      <Icon type={this.state.loading ? 'loading' : 'plus'}/>
+                  onChange={this.handleChange}
+                >
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="avatar" />
+                  ) : addModalType === 'edit' && schoolItem && schoolItem.previewImageUrl ? (
+                    <img src={schoolItem.previewImageUrl} alt="avatar" />
+                  ) : (
+                    <div>
+                      <Icon type={this.state.loading ? 'loading' : 'plus'} />
                       <div className="ant-upload-text">Upload</div>
-                    </div>}
+                    </div>
+                  )}
                 </Upload>
               )}
             </FormItem>
             <FormItem label="图片要求" {...formItemLayout}>
-            <div>仅支持jpg或png格式，且大小不超过2MB</div>
+              <div>仅支持jpg或png格式，且大小不超过2MB</div>
             </FormItem>
           </Form>
         </Modal>
-
       </PageHeaderLayout>
     );
   }

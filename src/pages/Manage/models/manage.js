@@ -1,6 +1,6 @@
 import moment from 'moment';
-import {notification} from 'antd';
-import {validResult} from "../../../utils/utilsValid";
+import { notification } from 'antd';
+import { validResult } from '../../../utils/utilsValid';
 import {
   getSchool,
   addSchoolData,
@@ -8,9 +8,11 @@ import {
   uptSchoolItem,
   delSchool,
   downloadQrcode,
-  getChangeSchool
+  getChangeSchool,
+  getTheme,
+  uptSchoolTheme,
 } from '../../../services/api';
-import {setSchoolInfo, getSchoolInfo} from '@/utils/index';
+import { setSchoolInfo, getSchoolInfo } from '@/utils/index';
 
 export default {
   namespace: 'manage',
@@ -21,11 +23,12 @@ export default {
       list: [],
       pagination: {},
     },
-    schoolItem: {}
+    schoolItem: {},
+    themeData: [],
   },
 
   subscriptions: {
-    setup({dispatch, history}) {
+    setup({ dispatch, history }) {
       /*dispatch({
         type: 'init',
       })*/
@@ -33,7 +36,7 @@ export default {
   },
 
   effects: {
-    * getSchoolList({payload, callback}, {call, select, put}) {
+    *getSchoolList({ payload, callback }, { call, select, put }) {
       let params = {
         rows: payload && payload.rows ? payload.rows : 10,
         page: payload && payload.page ? payload.page : 1,
@@ -43,7 +46,7 @@ export default {
       if (!validResult(result)) {
         return;
       }
-      let data = {}
+      let data = {};
       let pagination = {};
 
       pagination.current = result.data.current ? parseInt(result.data.current) : 1;
@@ -57,7 +60,7 @@ export default {
       });
     },
 
-    * addSchoolData({payload, callback}, {call, select, put}) {
+    *addSchoolData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
       };
@@ -69,8 +72,8 @@ export default {
       validResult(schoolS);
       if (!getSchoolInfo() || getSchoolInfo().length == 0) {
         let school = {
-          "schoolId": schoolS.data.list[0].id
-        }
+          schoolId: schoolS.data.list[0].id,
+        };
         const changeSchool = yield call(getChangeSchool, school);
         validResult(changeSchool);
         location.reload();
@@ -88,10 +91,10 @@ export default {
       if (callback) callback();
     },
 
-    * getSchoolItem({payload, callback}, {call, select, put}) {
+    *getSchoolItem({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload.id
-      }
+        id: payload.id,
+      };
       const result = yield call(getSchoolItem, params);
       if (!validResult(result)) {
         return;
@@ -100,14 +103,14 @@ export default {
       yield put({
         type: 'saveCP',
         payload: {
-          schoolItem: result.data.school
+          schoolItem: result.data.school,
         },
       });
     },
-    * uptSchoolData({payload, callback}, {call, select, put}) {
+    *uptSchoolData({ payload, callback }, { call, select, put }) {
       let params = {
         ...payload.values,
-      }
+      };
       const result = yield call(uptSchoolItem, params);
       if (!validResult(result)) {
         return;
@@ -124,10 +127,10 @@ export default {
       });
       if (callback) callback();
     },
-    * delSchoolData({payload, callback}, {call, select, put}) {
-      console.log(payload)
+    *delSchoolData({ payload, callback }, { call, select, put }) {
+      console.log(payload);
       let params = {
-        ids: payload && payload.ids ? payload.ids : []
+        ids: payload && payload.ids ? payload.ids : [],
       };
       const result = yield call(delSchool, params);
       if (!validResult(result)) {
@@ -145,12 +148,47 @@ export default {
       if (callback) callback();
     },
 
-    * downloadQrcode({payload, callback}, {call, select, put}) {
+    *downloadQrcode({ payload, callback }, { call, select, put }) {
       let params = {
-        id: payload && payload.schoolId ? payload.schoolId : 0
+        id: payload && payload.schoolId ? payload.schoolId : 0,
       };
       const result = yield call(downloadQrcode, params);
-    }
+    },
+
+    *themeData({ payload, callback }, { call, select, put }) {
+      let params = {};
+      const result = yield call(getTheme, params);
+      if (!validResult(result)) {
+        return;
+      }
+      yield put({
+        type: 'saveCP',
+        payload: {
+          schoolItem: result.data.list,
+        },
+      });
+    },
+
+    *uptSchoolTheme({ payload, callback }, { call, select, put }) {
+      let params = {
+        ...payload.values,
+      };
+      const result = yield call(uptSchoolTheme, params);
+      if (!validResult(result)) {
+        return;
+      }
+
+      notification.success({
+        message: '主题变更成功',
+      });
+      yield put({
+        type: 'getSchoolList',
+        payload: {
+          ...payload.searchVal,
+        },
+      });
+      if (callback) callback();
+    },
   },
 
   reducers: {
@@ -173,4 +211,4 @@ export default {
       };
     },
   },
-}
+};

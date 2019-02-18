@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
-import {Table, Alert, Badge, Divider, Modal} from 'antd';
+import { Table, Alert, Badge, Divider, Modal } from 'antd';
 import styles from './index.less';
 // import Qrcodemodal from './Qrcodemodal';
 // import reqwest from 'reqwest';
@@ -10,9 +10,7 @@ class ClassManageTable extends Component {
     selectedRowKeys: [],
   };
 
-  componentWillReceiveProps(nextProps) {
-
-  }
+  componentWillReceiveProps(nextProps) {}
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     const totalCallNo = selectedRows.reduce((sum, val) => {
@@ -22,24 +20,24 @@ class ClassManageTable extends Component {
     if (this.props.onSelectRow) {
       this.props.onSelectRow(selectedRows);
     }
-    this.setState({selectedRowKeys, totalCallNo});
-  }
+    this.setState({ selectedRowKeys, totalCallNo });
+  };
 
   cleanSelectedKeys = () => {
     this.handleRowSelectChange([], []);
-  }
+  };
   handleTableChange = (pagination, filters, sorter) => {
     this.props.onChange(pagination, filters, sorter);
-  }
-  handleInfo = (item) => {
+  };
+  handleInfo = item => {
     this.props.handleInfo(item);
-  }
-  delInfo = (item) => {
+  };
+  delInfo = item => {
     this.props.delInfo(item);
-  }
+  };
   uptInfo = (type, item) => {
     this.props.uptInfo(type, item);
-  }
+  };
 
   // previewQrcode = (item) =>{
   //   Modal.info({
@@ -48,21 +46,24 @@ class ClassManageTable extends Component {
   //   });
   // };
   // 下载二维码
-  downloadQrcode = (item) => {
-    this.props.downloadQrcode(item)
+  downloadQrcode = item => {
+    this.props.downloadQrcode(item);
   };
 
   render() {
-    const {data: {list, pagination}, loading} = this.props;
-    let {selectedRowKeys} = this.state;
+    const {
+      data: { list, pagination },
+      loading,
+    } = this.props;
+    let { selectedRowKeys } = this.state;
     let columns = [
       {
         title: '图片',
         dataIndex: 'previewImageUrl',
         key: 'previewImageUrl',
         render: (val, item) => {
-          return <img src={val} height='50' weight='50' alt=''/>
-        }
+          return <img src={val} height="50" weight="50" alt="" />;
+        },
       },
       {
         title: '学校',
@@ -100,11 +101,13 @@ class ClassManageTable extends Component {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        render: (val, item) => (
-          <div>
-            {val == 2 ? '停用' : '启用'}
-          </div>
-        ),
+        render: (val, item) => <div>{val == 2 ? '停用' : '启用'}</div>,
+      },
+      {
+        title: '主题',
+        dataIndex: 'themeId',
+        key: 'themeId',
+        render: (val, item) => <div>{val == 1 ? '川菜风' : '标准'}</div>,
       },
       {
         title: '二维码',
@@ -112,9 +115,13 @@ class ClassManageTable extends Component {
         key: 'url',
         render: (val, item) => (
           <div className={styles.handle}>
-            <span style={{cursor: 'pointer'}} onClick={() => this.downloadQrcode(item)}>下载</span>
-            <Divider type="vertical"/>
-            <span style={{cursor: 'pointer'}} onClick={() => this.downloadQrcode(item)}>预览</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => this.downloadQrcode(item)}>
+              下载
+            </span>
+            <Divider type="vertical" />
+            <span style={{ cursor: 'pointer' }} onClick={() => this.downloadQrcode(item)}>
+              预览
+            </span>
           </div>
         ),
       },
@@ -124,12 +131,17 @@ class ClassManageTable extends Component {
         align: 'center',
         render: (val, item) => (
           <div className={styles.handle}>
-            <span style={{cursor: 'pointer'}}
-                  onClick={() => this.handleInfo(item)}>{item.status == 2 ? '启用' : '停用'}</span>
-            <Divider type="vertical"/>
-            <span style={{cursor: 'pointer'}} onClick={() => this.delInfo(item)}>删除</span>
-            <Divider type="vertical"/>
-            <span style={{cursor: 'pointer'}} onClick={() => this.uptInfo('edit', item)}>修改</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => this.handleInfo(item)}>
+              {item.status == 2 ? '启用' : '停用'}
+            </span>
+            <Divider type="vertical" />
+            <span style={{ cursor: 'pointer' }} onClick={() => this.delInfo(item)}>
+              删除
+            </span>
+            <Divider type="vertical" />
+            <span style={{ cursor: 'pointer' }} onClick={() => this.uptInfo('edit', item)}>
+              修改
+            </span>
           </div>
         ),
       },
@@ -137,7 +149,7 @@ class ClassManageTable extends Component {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      pageSizeOptions: ["10", "20", "50", "100"],
+      pageSizeOptions: ['10', '20', '50', '100'],
       ...pagination,
     };
     const rowSelection = {
@@ -161,7 +173,6 @@ class ClassManageTable extends Component {
         />
       </div>
     );
-
   }
 }
 

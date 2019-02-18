@@ -348,6 +348,27 @@ export default class VipManage extends Component {
           },
         });
         break;
+      case 'qrcode':
+        confirm({
+          title: '',
+          content: '是否确认批量下载二维码？',
+          okText: '确认',
+          cancelText: '取消',
+          onOk() {
+            window.open(
+              `${url.baseURL}/schoolCustomTest/qrcode/batch?ids=${selectedRows.map(row => row.id)}`
+            );
+            that.setState({
+              selectedRows: [],
+            });
+          },
+          onCancel() {
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+        break;
       default:
         break;
     }
@@ -645,6 +666,7 @@ export default class VipManage extends Component {
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="del">批量删除</Menu.Item>
+        <Menu.Item key="qrcode">批量下载二维码</Menu.Item>
       </Menu>
     );
     let statusObj = [

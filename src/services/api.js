@@ -149,9 +149,21 @@ export async function getChangeSchool(params) {
     body: params,
   });
 }
+export async function getTheme(params) {
+  return request('/schoolTheme/all', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function uptSchoolTheme(params) {
+  return request('/schoolBase/change/theme', {
+    method: 'POST',
+    body: params,
+  });
+}
 export async function downloadQrcode(params) {
-  console.log(params.id)
-  return request('/schoolBase/qrcode/'+params.id, {
+  console.log(params.id);
+  return request('/schoolBase/qrcode/' + params.id, {
     method: 'GET',
     // body: params,
   });
