@@ -32,4 +32,8 @@ export default {
   'menu.capabilityStatistics': '能力统计',
   'menu.fractionalRule': '分数规则',
   'menu.account.logout': '退出登录',
+  'menu.alumnusManage': '校园文化',
+  'menu.autographManage': '校园校友',
+  'menu.schoolManage': '校友签名',
+  'menu.backgroundManage': '签名背景',
 };
