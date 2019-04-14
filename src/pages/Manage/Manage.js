@@ -18,6 +18,7 @@ import {
   message,
   Radio,
   Upload,
+  Checkbox,
   notification,
 } from 'antd';
 import { routerRedux } from 'dva/router';
@@ -35,6 +36,7 @@ import url from '../../utils/ipconfig';
 
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
+const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -310,7 +312,7 @@ export default class VipManage extends Component {
           imageUrl,
           loading: false,
           previewImageResourceId: info.file.response.resource.id,
-        })
+        }),
       );
     }
   };
@@ -343,18 +345,18 @@ export default class VipManage extends Component {
           maxLength={'15'}
           size={{ lg: 12, xl: 8, xxl: 6 }}
         />
-        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }} />
+        <BtnSearch dispatch={this.props} con={'搜索'} size={{ lg: 12, xl: 8, xxl: 1 }}/>
         <Col id={'mediaXl'}>
           <Button
             type="primary"
             style={{ marginLeft: '10px' }}
             onClick={() => this.addShow(null, null)}
           >
-            <Icon type="plus-circle" />
+            <Icon type="plus-circle"/>
             新增
           </Button>
           <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.delInfo()}>
-            <Icon type="plus-circle" />
+            <Icon type="plus-circle"/>
             批量删除
           </Button>
         </Col>
@@ -377,13 +379,13 @@ export default class VipManage extends Component {
     };
     let themeObj = [];
     themeData &&
-      themeData.map(el => {
-        themeObj.push(
-          <Option value={el.id} key={el.id}>
-            {el.themeInfo}
-          </Option>
-        );
-      });
+    themeData.map(el => {
+      themeObj.push(
+        <Option value={el.id} key={el.id}>
+          {el.themeInfo}
+        </Option>,
+      );
+    });
     return (
       <PageHeaderLayout title="学校管理">
         <Card bordered={false}>
@@ -421,27 +423,27 @@ export default class VipManage extends Component {
                     message: '请输入名称',
                   },
                 ],
-              })(<Input placeholder={'请输入名称'} maxLength={100} />)}
+              })(<Input placeholder={'请输入名称'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="网址" {...formItemLayout}>
               {getFieldDecorator('websiteUrl', {
                 initialValue: addModalType === 'edit' && schoolItem ? schoolItem.websiteUrl : '',
-              })(<Input placeholder={'请输入网址'} maxLength={100} />)}
+              })(<Input placeholder={'请输入网址'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="联系方式" {...formItemLayout}>
               {getFieldDecorator('contact', {
                 initialValue: addModalType === 'edit' && schoolItem ? schoolItem.contact : '',
-              })(<Input placeholder={'请输入联系方式'} maxLength={100} />)}
+              })(<Input placeholder={'请输入联系方式'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="简介" {...formItemLayout}>
               {getFieldDecorator('content', {
                 initialValue: addModalType === 'edit' && schoolItem ? schoolItem.content : '',
-              })(<Input placeholder={'请输入简介'} maxLength={100} />)}
+              })(<Input placeholder={'请输入简介'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="地址" {...formItemLayout}>
               {getFieldDecorator('address', {
                 initialValue: addModalType === 'edit' && schoolItem ? schoolItem.address : '',
-              })(<Input placeholder={'请输入地址'} maxLength={100} />)}
+              })(<Input placeholder={'请输入地址'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="账号" {...formItemLayout}>
               {getFieldDecorator('username', {
@@ -452,7 +454,7 @@ export default class VipManage extends Component {
                     message: '请输入账号',
                   },
                 ],
-              })(<Input placeholder={'请输入账号'} maxLength={100} />)}
+              })(<Input placeholder={'请输入账号'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="密码" {...formItemLayout}>
               {getFieldDecorator('password', {
@@ -463,7 +465,7 @@ export default class VipManage extends Component {
                     message: '请输入密码',
                   },
                 ],
-              })(<Input placeholder={'请输入密码'} maxLength={100} />)}
+              })(<Input placeholder={'请输入密码'} maxLength={100}/>)}
             </FormItem>
             <FormItem label="状态" {...formItemLayout}>
               {getFieldDecorator('status', {
@@ -472,7 +474,7 @@ export default class VipManage extends Component {
                 <RadioGroup>
                   <Radio value={1}>启用</Radio>
                   <Radio value={2}>禁用</Radio>
-                </RadioGroup>
+                </RadioGroup>,
               )}
             </FormItem>
             {/*<FormItem label="主题" {...formItemLayout}>*/}
@@ -492,7 +494,7 @@ export default class VipManage extends Component {
                 <RadioGroup onChange={this.changeTheme}>
                   <Radio value={0}>标准</Radio>
                   <Radio value={1}>川菜风</Radio>
-                </RadioGroup>
+                </RadioGroup>,
               )}
             </FormItem>
             <FormItem label="学校图片" {...formItemLayout}>
@@ -515,20 +517,30 @@ export default class VipManage extends Component {
                   onChange={this.handleChange}
                 >
                   {imageUrl ? (
-                    <img src={imageUrl} alt="avatar" />
+                    <img src={imageUrl} alt="avatar"/>
                   ) : addModalType === 'edit' && schoolItem && schoolItem.previewImageUrl ? (
-                    <img src={schoolItem.previewImageUrl} alt="avatar" />
+                    <img src={schoolItem.previewImageUrl} alt="avatar"/>
                   ) : (
                     <div>
-                      <Icon type={this.state.loading ? 'loading' : 'plus'} />
+                      <Icon type={this.state.loading ? 'loading' : 'plus'}/>
                       <div className="ant-upload-text">Upload</div>
                     </div>
                   )}
-                </Upload>
+                </Upload>,
               )}
             </FormItem>
             <FormItem label="图片要求" {...formItemLayout}>
               <div>仅支持jpg或png格式，且大小不超过2MB</div>
+            </FormItem>
+            <FormItem label="权限" {...formItemLayout}>
+              {getFieldDecorator('status', {
+                initialValue: addModalType === 'edit' && schoolItem ? ['A'] : ['A', 'B'],
+              })(
+                <CheckboxGroup defaultValue={['A']}>
+                  <Checkbox value="A">校园校友</Checkbox>
+                  <Checkbox value="B">校友签名</Checkbox>
+                </CheckboxGroup>,
+              )}
             </FormItem>
           </Form>
         </Modal>
