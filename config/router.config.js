@@ -184,6 +184,27 @@ export default [
         name: 'fractionalRule',
         component: './FractionalRule/FractionalRule',
       },
+        {
+        path: '/alumnusManage',
+        icon: 'table',
+        name: 'alumnusManage',
+        component: './AlumnusManage/AutographManage',
+      },
+      {
+        path: '/alumnusManage/autograph-manage',
+        name: 'autographManage',
+        component: './AlumnusManage/AutographManage',
+      },
+      {
+        path: '/alumnusManage/school-manage',
+        name: 'schoolManage',
+        component: './AlumnusManage/SchoolManage',
+      },
+      {
+        path: '/alumnusManage/background-manage',
+        name: 'backgroundManage',
+        component: './AlumnusManage/BackgroundManage',
+      },
       {
         component: '404',
       },
