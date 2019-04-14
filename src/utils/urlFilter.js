@@ -36,6 +36,9 @@ const notInLeftMenu = [
   '/itemBankManage/group-manage',
   '/dataStatistics/visitingStatistics',
   '/dataStatistics/capabilityStatistics',
+  '/alumnusManage/autograph-manage',
+  '/alumnusManage/school-manage',
+  '/alumnusManage/background-manage',
 ]
 
 export function urlNotInLeft(path) {
@@ -55,5 +58,6 @@ export function replaceSelectPath(path) {
   path = path.replace('/displayBoardManage/type-manage', '/displayBoardManage').replace('/displayBoardManage/content-manage', '/displayBoardManage');
   path = path.replace('/itemBankManage/know-points-manage', '/itemBankManage').replace('/itemBankManage/item-manage', '/itemBankManage').replace('/itemBankManage/custom-manage', '/itemBankManage').replace('/itemBankManage/group-manage', '/itemBankManage');
   path = path.replace('/dataStatistics/visitingStatistics', '/dataStatistics').replace('/dataStatistics/capabilityStatistics', '/dataStatistics');
+  path = path.replace('/alumnusManage/autograph-manage', '/alumnusManage').replace('/alumnusManage/school-manage', '/alumnusManage').replace('/alumnusManage/background-manage', '/alumnusManage');
   return path;
 }
